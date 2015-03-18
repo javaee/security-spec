@@ -1,0 +1,6 @@
+= JSR 375 Java EE Security Specification
+
+This is the Specification source for JSR 375
+
+ - *primary*: git://java.net/javaee-security-spec~spec
+ - mirror: git@github.com:javaee-security-spec/javaee-security-spec.git
