@@ -1,0 +1,20 @@
+:sectanchors:
+:doctype: book
+:compat-mode:
+= Security API for the Java EE
+
+include::preface.asciidoc[]
+
+include::concepts.asciidoc[]
+
+include::identityStore.asciidoc[]
+
+include::authenticationMechanism.asciidoc[]
+
+include::roleAssignment.asciidoc[]
+
+include::securityContext.asciidoc[]
+
+include::authorizationInterceptors.asciidoc[]
+
+include::passwordAliasing.asciidoc[]

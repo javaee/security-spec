@@ -1,0 +1,14 @@
+:numbered!:
+["preface",sectnum="0"]
+
+== Preface
+
+=== Evaluation license
+
+include::license.asciidoc[]
+
+=== Foreword
+
+Security API 1.0 is the initial release of (link:https://jcp.org/en/jsr/detail?id=375[JSR-375^]).
+
+:numbered:

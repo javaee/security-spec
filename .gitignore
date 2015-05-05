@@ -17,3 +17,7 @@ target
 
 # emacs
 *~
+
+# netbeans
+nb-configuration.xml
+nbactions.xml

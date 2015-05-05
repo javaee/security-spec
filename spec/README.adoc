@@ -1,0 +1,23 @@
+= JSR 375 EE Security API: Specification Generation
+
+The spec module contains the AsciiDoc sources to generate the specification document in both HTML and pdf format.
+
+== Generating the Specification
+
+Just enter `mvn` at the command line in this directory. Maven will generate the following artifacts.
+
+Specification as PDF::
+* The specification in PDF form.
+* In the directory: `spec/target/publish/docbook/publish/en-US/pdf`
+
+Specification as HTML::
+* The specification in HTML form.
+* In the directory: `spec/target/publish/html`
+
+== Specification Source
+
+The AsciiDoc specification source is located in this directory:
+`spec/src/main/doc`
+
+
+

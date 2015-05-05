@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>javax.security</groupId>
+    <artifactId>javax.security-spec</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <name>EE Security API Specification</name>
+    <description>Parent module for EE Security API Specification</description>
+
+    <url>https://java.net/projects/javaee-security-spec</url>
+    <licenses>
+        <license>
+            <name>Java EE Security API 1.0 specification license</name>
+            <url>https://jcp.org/aboutJava/communityprocess/licenses/jsr375/JSR_375-Spec-Java_EE_Security_API-1.0-11.25.14.pdf</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Oracle Corporation</name>
+        <url>http://www.oracle.com/</url>
+    </organization>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/JAVAEE_SECURITY_SPEC</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>JSR 375 Expert Group List</name>
+            <archive>jsr375-experts@javaee-security-spec.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR 375 Specification Users List</name>
+            <archive>users@javaee-security-spec.java.net</archive>
+        </mailingList>
+    </mailingLists>
+
+    <modules>
+        <module>spec</module>
+        <module>api</module>
+    </modules>
+
+    <build>
+        <defaultGoal>clean package javadoc:javadoc</defaultGoal>
+    </build>
+
+</project>

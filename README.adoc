@@ -1,6 +1,45 @@
-= JSR 375 Java EE Security Specification
+= JSR 375 EE Security API: Specification, Java API, and JavaDoc Generation
 
-This is the Specification source for JSR 375
+This project contains the AsciiDoc and Java API sources to generate the specification document, the Java API, and the JavaDoc. The project is organized into two modules: _api_ and _spec_. The api module contains the Java API sources, which may be used to generate the api jar and JavaDoc. The spec module contains the specification document sources, which may be used to generate the specification in both HTML and pdf format.
 
- - *primary*: git://java.net/javaee-security-spec~spec
- - mirror: git@github.com:javaee-security-spec/javaee-security-spec.git
+== Mirroring from java.net
+
+The specification must originate from java.net per Oracle policy. To enable use of the facilities of GitHub, the java.net repository is periodically mirrored into a GitHub repository. The corresponding GitHub repository is effectively "read only".
+
+Source Repository on java.net::
+`git://java.net/javaee-security-spec~spec-api`
+
+Mirrored Respository on GitHub::
+`git@github.com:javaee-security-spec/spec-api.git`
+
+== Generating the Specification, API, and JavaDoc
+
+Just enter `mvn` at the command line. Maven will generate the following artifacts.
+
+Specification as PDF::
+* The specification in PDF form.
+* In the directory: `spec/target/publish/docbook/publish/en-US/pdf`
+
+Specification as HTML::
+* The specification in HTML form.
+* In the directory: `spec/target/publish/html`
+
+API Jar::
+* The jar containing the api interfaces and classes.
+* In the directory: `/api/target`
+
+API JavaDoc::
+* The JavaDoc for the api interfaces and classes.
+* In the directory: `api/target/site/apidocs`
+
+== How to Contribute from GitHub
+
+_NOTE: Only Expert Group members may contribute changes to this repository due to requiring a Java Specification Participation Agreement._
+
+[start=1]
+. Fork the repository
+. Create the change in your fork
+. Submit a Pull Request
+. The change is reviewed
+. If approved, spec lead merges the change into java.net
+. Change gets mirrored back to GitHub
