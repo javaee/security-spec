@@ -1,6 +1,0 @@
-[[authorization-interceptors]]
-
-== Authorization Interceptors
-
-to do
-
