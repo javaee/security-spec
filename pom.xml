@@ -39,7 +39,8 @@
 
     <modules>
         <module>spec</module>
-        <module>api</module>
+	<!-- don't build api from this repository -->
+        <!-- <module>api</module> -->
     </modules>
 
     <build>
