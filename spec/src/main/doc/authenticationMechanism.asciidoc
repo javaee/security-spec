@@ -143,5 +143,55 @@
 
 == Authentication Mechanism
 
-to do
+This chapter describes the contract that specifies how a server-side authentication module defined by this specification works.
+
+=== Introduction
+
+A web application consists of resources that can be accessed by any number of callers that are initially unknown to the application. Callers make themselves known to the application via the process of authentication. In this process a caller presents a prove, the credential, which the application validates and if found to be correct responds to by making the data corresponding to this caller available.
+
+For the interaction with the caller (the "authentication dialog between the caller and the system") where a prove is collected, this specification defines a dedicated entity; the authentication mechanism, represented by the _HttpAuthenticationMechanism_ interface.
+
+=== Division of Responsibility
+
+In a Java EE system the _HttpAuthenticationMechanism_ is responsible for starting and engaging in the authentication dialog when a caller attempts to invoke a Servlet resource. A caller can access a Java EE system via other ways, like for example invoking a remote EJB bean, sending a JMS message to a destination hosted by the Java EE system or generally via any type of JCA inflow. The _HttpAuthenticationMechanism_ explicitly has *no* responsibilities when a caller attempts to access any resource other than a Servlet resource.
+
+=== Relationship to other specifications
+
+An _HttpAuthenticationMechanism_ is a CDI bean, as defined by the CDI (JSR 346) specification. The methods defined by the _HttpAuthenticationMechanism_ closely map to the methods and semantics of a _ServerAuthModule_ as defined by the Servlet Container Profile of the JASPIC (JSR 196) specification, but an _HttpAuthenticationMechanism_ is itself not a _ServerAuthModule_.
+
+This specification mandates that when a _ServerAuthModule_ is called by the Servlet container, CDI services (such as the _BeanManager_) are fully available and all scopes that are defined to be active during the _service()_ method of a servlet, or during the _doFilter()_ method of servlet filter are active. Specifically this means that the request scope, session scope and application scope must be active, and that a _ServerAuthModule_ method such as _validateRequest_ must be capable of 1) obtaining a reference to the CDI _BeanManager_ via programmatic means (for example, by doing a JNDI lookup) and 2) can use this reference to obtain a valid request scoped, session scoped or application scoped bean. This specification *does not* mandate that a _ServerAuthModule_ itself is a CDI bean or that a _ServerAuthModule_ is injectable.
+
+An _HttpAuthenticationMechanism_ implementation is logically equivalent to a build-in authentication mechanism as defined by the Servlet spec, being HTTP Basic Authentication, HTTP Digest Authentication, Form Based Authentication and HTTPS Client Authentication, and more specifically is corresponding to an "additional container authentication mechanism" as described in section 13.6.5 of the Servlet spec.
+
+
+=== Installation
+
+Installation of an _HttpAuthenticationMechanism_ depends on the CDI specification. That is, an _HttpAuthenticationMechanism_ is considered installed and available for usage when it's available to the CDI runtime as an enabled Bean. An _HttpAuthenticationMechanism_ is assumed to be normal scoped.
+
+It *must* be possible for the definition of an _HttpAuthenticationMechanism_ to exist within the application archive. Alternatively such definition may also exists outside the application archive, for example in a jar added to the classpath of an application server. 
+
+=== Orchestrating the authentication dialog
+ 
+The _HttpAuthenticationMechanism_ interface defines three methods that are used by the runtime to allow it to orchestrate an authentication dialog (interacting with a caller to obtain a credential):
+ 
+* validateRequest
+* secureResponse
+* cleanSubject
+ 
+All of these three methods must be called right after a Servlet container calls the similarly named methods on a _ServerAuthModule_ following the Servlet Container Profile of the JASPIC spec.
+
+Summarized this means:
+
+*  _validateRequest_ must be invoked before the _doFilter()_ method of any servlet filter or the _service()_ method of any servlet in the application for requests to constrained as well as to unconstrained resources, and in addition in response to application code calling the _authenticate_ method on the _HttpServletRequest_.
+
+* _secureResponse_ must be invoked after the _doFilter()_ method of any servlet filter or the _service()_ method of any servlet in the application for requests to constrained as well as to unconstrained resources, but only if any of these two methods have indeed been invoked.
+
+* _cleanSubject_ must be invoked in response to the application calling the _logout_ method on the _HttpServletRequest_.
+
+The _validateRequest_ method is provided to allow a caller to authenticate. An implementation of this method can inspect the HTTP request to for example extract a credential from an HTTP header, request parameter, post parameter, etc, or write to the HTTP response to for example redirect a caller to another resource such as a login form or an OAuth provider. After a credential has been obtained and validated, the result of this validation can be communicated to the container using the passed in _HttpMessageContext_, which is described in more detail below.
+
+The _secureResponse_ method is provided to allow post processing on the response generated by a servlet and/or servlet filter, such as encrypting it.
+
+The _cleanSubject_ is provided to allow for cleanup after a caller is logged out. For example, an authentication mechanism that stores state within a cookie can remove that cookie here.
+
 

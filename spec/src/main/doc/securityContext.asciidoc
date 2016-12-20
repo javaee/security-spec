@@ -143,5 +143,41 @@
 
 == Security Context
 
-to do
+This chapter describes the contract that specifies how a security aware application can take advantage of programmatic security. 
+
+
+=== Introduction
+
+The Java EE platform defines a declarative security model via which resources can be constrained. These constraints are then enforced by the container. In some cases the declarative model is not sufficient, for example when more complex combinations of constraints and tests are needed than the declarative model allows. Programmatic security allows an application to perform tests and grant or reject access to resources itself. 
+
+This specification provides an access point for programmatic security; the security context, represented by the _SecurityContect_ interface.
+
+=== Relationship to other specifications
+
+The _SecurityContect_ implementation is a CDI bean, as defined by the CDI (JSR 346) specification.
+
+Various specifications in Java EE provide similar or even identical methods to those provided be the _SecurityContect_. It is the intention of this specification to supersede all of those and provide a cross-spec, platform alternative. The following gives an overview:
+
+* Servlet spec - _HttpServletRequest#getUserPrincipal_, _HttpServletRequest#isUserInRole_
+* EJB spec - _EJBContect#getCallerPrincipal_, _EJBContext#isCallerInRole_
+* JAX-WS spec - _WebServiceContext#getUserPrincipal_, _WebServiceContext#isUserInRole_
+* JAX-RS spec - _SecurityContext#getUserPrincipal_, _SecurityContext#isUserInRole_
+* JSF spec - _ExternalContext#getUserPrincipal_, _ExternalContext#isUserInRole_
+* CDI - _@Inject Principal_
+* WebSockets - _Session#getUserPrincipal_
+
+=== Testing for caller data
+
+The _SecurityContect_ interface defines two methods that allow the application to test aspects of the caller data:
+
+The _getCallerPrincipal_ method is provided to retrieve the _Principal_ that represents the caller's name. It *must* be possible for the application to downcast this _Principal_ to the exact _Principal_ type that was set by the _HttpAuthenticationMechanism_ (possibly via an _IdentityStore_) or a JASPIC _ServerAuthModule_.
+
+The _isCallerInRole_ method takes a string argument that represents the application role that is to be tested for. The application role is defined as the group name as set by the _HttpAuthenticationMechanism_ (possibly via an _IdentityStore_) or a JASPIC _ServerAuthModule_ after group to role mapping has taken place.
+
+=== Triggering the authentication process
+
+The _SecurityContect_ interface defines two overloaded methods that allow the application to programmatically trigger the authentication process. Programmatically triggering means that the container responds as-if the caller had attempted to access a constrained resource and responds with invoking a configured authentication mechanism (such as the _HttpAuthenticationMechanism_).
+
+The _authenticate_ method allows an application to signal to the container that it should start the authentication process with the caller. This method requires an _HttpServletResponse_ argument to be passed in, and can therefore only be used in a valid Servlet context.
+
 

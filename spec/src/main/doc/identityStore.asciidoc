@@ -143,4 +143,104 @@
 
 == Identity Store
 
-To do
+This chapter describes the contract that specifies how a server-side authentication module (that is, an implementation of the HttpAuthenticationMechanism interface as defined by this specification) may delegate some of its security processing responsibilities to an identity store.
+
+
+=== Introduction
+
+A web application consists of resources that can be accessed by any number of callers that are initially unknown to the application. Callers make themselves known to the application via the process of authentication. In this process a caller presents a prove, the credential, which the application validates and if found to be correct responds to by making the data corresponding to this caller available.
+
+For the transformation of a credential to caller data this specification defines a dedicated entity; the identity store, represented by the _IdentityStore_ interface.
+
+=== Division of Responsibility
+
+An _HttpAuthenticationMechanism_ is not mandated to delegate to an _IdentityStore_, and is free to perform a _{credentials in, caller data out}_ function itself or by delegating to any kind of proprietary entity. When an _HttpAuthenticationMechanism_ does delegate to an _IdentityStore_ it must do so by adhering to the constraints and semantics as described in this chapter.
+
+An _HttpAuthenticationMechanism_ must not interact with an _IdentityStore_ directly but instead has to use the _IdentityStoreHandler_ and must do so in a caller environment independent fashion. This means specifically that an HttpAuthenticationMechanism is the only entity in this relation that may access the HTTP environment (for example, getting a request parameter or cookie from the (Http)ServletRequest). An _IdentityStore_ must only perform environment independent security processing (for example, verifying a username/password that was passed in to it as a String/char array and returning the caller data). In other words, the _IdentityStore_ must not directly interact with the caller and should perform a pure _{credentials in, caller data out}_ function.
+
+
+=== State
+
+An _IdentityStore_ is logically stateless. An _HttpAuthenticationMechanism_ using an _IdentityStore_ should not make any assumptions about the state of such _IdentityStore_ following one or more calls to it. Specifically, the _IdentityStore_ store must not be aware of the point the caller has reached in the authentication process and even more specifically the _IdentityStore_ should not keep track of whether a caller is authenticated or not at any given moment in time.
+
+An _IdentityStore_ instance is allowed to make use of instance variables, for example to store configuration data like a URL to an LDAP server, to store actual caller data for in-memory lookup, use instance variables for the purpose of caching, etc.
+
+=== Installation
+
+Installation of an _IdentityStore_ depends on the CDI specification. That is, an _IdentityStore_ is considered installed and available for usage when it's available to the CDI runtime as an enabled Bean. An _IdentityStore_ is assumed to be normal scoped.
+
+It *must* be possible for the definition of an _IdentityStore_ to exist within the application archive. Alternatively such definition may also exists outside the application archive, for example in a jar added to the classpath of an application server. 
+
+=== Configuration
+
+The _IdentityStore_ interface defines two methods that are used by the runtime to read configuration:
+
+* int priority()
+* ValidationType validationType()
+
+The _priority_ method allows an _IdentityStore_ to be configured with an ordinal number that indicates in which order an _IdentityStore_ is consulted in case multiple ones are present, or more exactly when multiple enabled CDI Beans with type _IdentityStore_ are available. A lower value returned here means that _IdentityStore_ is called before an _IdentityStore_ returning a higher value. The order of being called is undefined when two _IdentityStore_ implementations return the same value.
+
+The _validationType_ method returns an enum constant of type _ValidationType_, that indicates if an _IdentityStore_ is to be used for authentication only (meaning any group data it returns must be ignored), for authorization only (meaning it's not used for authentication, but only to obtain the group data from if the caller is authenticated via other means), or both (meaning it's used for authentication and any group data it returns is used).
+
+
+=== Validation and obtaining caller data
+
+The _IdentityStore_ interface defines two methods that are used by the runtime to validate a _Credential_ and/or to obtain caller data:
+
+* CredentialValidationResult validate(Credential credential)
+* List<String> getGroupsByCallerPrincipal(CallerPrincipal callerPrincipal)
+
+The _validate_ method is provided to allow the runtime to validate that a _Credential_ is valid, and if so to obtain the caller data associated with the _Credential_. A _Credential_ passed in to this method is deemed to be valid if and only if the _getStatus_ method called on the result of type _CredentialValidationResult_ returns the enum constant _VALID_. In that case calling _getCallerPrincipal_ on this same result will yield a _Principal_ representing the name of the authenticated caller, and calling _getCallerGroups_ on this same result will yield a list of zero or more groups that the authenticated caller is in.
+
+An _IdentityStore_ implementation is allowed to support multiple types of concrete _Credentials_, where a concrete _Credential_ is an implementation of the _Credential_ interface. It can do so by either implementing the _CredentialValidationResult validate(Credential credential)_ method and testing the type of the _Credential_ that's passed in, or by overriding the _validate(Credential credential)_ method by one or more methods where the method parameter of each of these methods is the exact type of the _Credential_ implementation that the _IdentityStore_ is capable of handling.
+
+The following shows an example of such overloaded method definition:
+
+```
+public class ExampleIdentityStore implements IdentityStore {
+
+    public CredentialValidationResult validate(UsernamePasswordCredential usernamePasswordCredential) {
+        // Implementation ...
+        return new CredentialValidationResult(...);
+    }
+}
+```
+
+If an implementation of the _validate_ method finds out it's not capable of handling the actual type of the _Credential_ that is passed in, it *must* return a _CredentialValidationResult_ on which calling the _getStatus_ method returns the enum constant _NOT_VALIDATED_.
+
+If validation of the _Credential_ fails, for example when it consists of an unknown or expired token or a username/pasword combination that does not match, the _validate_ method *must* return a _CredentialValidationResult_ on which calling the _getStatus_ method returns the enum constant _INVALID_.
+
+The _getGroupsByCallerPrincipal_ method is provided to allow the runtime to obtain the list of groups associated with the _CallerPrincipal_ that is passed in. This in an optional method and an _IdentityStore_ implementation is not mandated to support this. If an _IdentityStore_ implementation does support this method it must be consistent with the _validate_ method, meaning that if the _validate_ method returns a _VALID_ result with _CallerPrincipal_ "foo" and groups _{bar, kaz, zak}_, then passing this _CallerPrincipal_ "foo" into the _getGroupsByCallerPrincipal_ method should yield the same list of groups _{bar, kaz, zak}_.
+
+=== Build-in IdentityStore beans
+
+A Java EE container must allow build-in beans for the following _IdentityStore_ types to be made available via configuration:
+
+* Embedded - allowing caller data to be stored directly in an annotation. This bean is activated and configured via the @EmbeddedIdentityStoreDefinition annotation.
+* LDAP - allowing caller data to be stored in an external LDAP server. This bean is activated and configured via the @LdapIdentityStoreDefinition annotation.
+* Database - allowing caller data to be stored in an external database accessible via a DataSource bound to JNDI. This bean is activated and configured via the @DataBaseIdentityStoreDefinition annotation.
+
+All of all these beans must have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.
+
+=== Handling multiple identity stores
+
+Access to the _IdentityStore_ is abstracted by the _IdentityStoreHandler_, which is an interface providing a single method:
+
+* CredentialValidationResult validate(Credential credential)
+
+For the caller, which is for this specification the _HttpAuthenticationMechanism_, the semantics of the _validate_ method are as described for the _IdentityStore_ method with the same signature.
+
+The purpose of the _IdentityStoreHandler_ is to allow for the presence of multiple identity stores to logically act as a single _IdentityStore_ to the _HttpAuthenticationMechanism_. A compliant implementation of this specification must provide a default implementation of the _IdentityStoreHandler_ that is:
+
+* an enabled CDI bean
+* with qualier @Default and scope @ApplicationScoped, as defined by the CDI specification
+
+The _validate_ method of the default implementation has to take the following actions:
+
+* Call the _validate(Credential credential)_ method on all available _IdentityStore_ beans that declared to be capable of doing authentication in the order induced by the return value of the _getPriority_ method of each _IdentityStore_ (lower values returned by _getPriority_ means a lower order, and hence the _validate(Credential credential)_ method will be called sooner)
+* For the first such call to the _validate(Credential credential)_ method that returns a result on which calling _getStatus()_ returns _VALID_, stop calling the _IdentityStore_ beans and remember this result.
+* If all _IdentityStore_ beans have been called, and for none of those the _validate(Credential credential)_ method return a result on which calling _getStatus()_ returned a _VALID_ result, return the result of the last _IdentityStore_ that was consulted.
+* If we have a _VALID_ result, call the _getGroupsByCallerPrincipal(CallerPrincipal callerPrincipal)_ method on all available _IdentityStore_ beans that declared to be capable of doing only authorization in the order induced by the return value of the _getPriority_ method of each _IdentityStore_ (lower values returned by _getPriority_ means a lower order, and hence the _validate(Credential credential)_ method will be called sooner). The _CallerPrincipal_ passed in to this method is the _CallerPrincipal_ obtained from the result of calling _validate(Credential credential)_ before.
+* Return a new _CredentialValidationResult_ with status _VALID_, the _CallerPrincipal_ that was used in each call to the _getGroupsByCallerPrincipal_ method, and the collection of groups that is the combination of the groups returned by the result of the _validate(Credential credential)_ call for which _getStatus()_ returned _VALID_ and all of the groups returned by each call to the _getGroupsByCallerPrincipal_ method.
+
+
