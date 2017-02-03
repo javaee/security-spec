@@ -8,14 +8,14 @@ Just enter `mvn` at the command line in this directory. Maven will generate the 
 
 Specification as PDF::
 * The specification in PDF form.
-* In the directory: `spec/target/publish/docbook/publish/en-US/pdf`
+* In the directory: `target/publish/docbook/publish/en-US/pdf`
 
 Specification as HTML::
 * The specification in HTML form.
-* In the directory: `spec/target/publish/html`
+* In the directory: `target/publish/html`
 
 == Specification Source
 
 The AsciiDoc specification source is located in this directory:
-`spec/src/main/doc`
+`src/main/doc`
 
