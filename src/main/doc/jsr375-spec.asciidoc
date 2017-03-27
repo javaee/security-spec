@@ -143,7 +143,8 @@
 :doctype: book
 :compat-mode:
 = Java EE Security API 1.0 (EDR 1)
-
+List of Authors
+v${project.version}
 include::license.asciidoc[]
 
 include::preface.asciidoc[]
