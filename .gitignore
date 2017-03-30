@@ -21,3 +21,5 @@ target
 # netbeans
 nb-configuration.xml
 nbactions.xml
+/.settings/
+/.project
