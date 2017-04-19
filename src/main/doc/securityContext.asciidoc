@@ -151,20 +151,69 @@ The Java EE platform defines a declarative security model via which resources ca
 
 This specification provides an access point for programmatic security; the security context, represented by the _SecurityContect_ interface.
 
-=== Testing for Caller Data
+To facilitate portable implementations and coherence it is recommended that the implementation of many methods (see below) is done by using the Java Authorization Contract for Containers, also known as JACC (i.e., JSR 115). The JACC specification is available for download at: http://jcp.org/en/jsr/detail?id=115.
 
-The _SecurityContect_ interface defines two methods that allow the application to test aspects of the caller data:
+=== Retrieving and Testing for Caller Data
+
+The _SecurityContect_ interface defines three methods that allow the application to test aspects of the caller data:
 
 [source,java]
 ----
 Principal getCallerPrincipal();
 
 boolean isCallerInRole(String role);
+
+List<String> getAllDeclaredCallerRoles();
 ----
 
 The _getCallerPrincipal()_ method is provided to retrieve the _Principal_ that represents the caller's name. It MUST be possible for the application to downcast this _Principal_ to the exact _Principal_ type that was set by the _HttpAuthenticationMechanism_ (possibly via an _IdentityStore_) or a JASPIC _ServerAuthModule_.
 
-The _isCallerInRole()_ method takes a String argument that represents the application role that is to be tested for. It is undefined by this specification how the role determinatino is made; however, the result of calling _isCallerInRole()_ MUST be the same as if the corresponding container-specific call had been made (e.g., _HttpServletRequest.isUserInRole()_), and MUST be consistent with the result implied by other specifications that prescribe role-mapping behavior.
+The _isCallerInRole()_ method takes a String argument that represents the *application role* that is to be tested for. This excludes roles that are mapped to specific named Servlets or named EJB beans. It is undefined by this specification how the role determination is made, but to facilitate portable implementations and coherence it is recommended that the implementation of this method uses the Java Authorization Contract for Containers, also known as JACC (i.e., JSR 115). The JACC specification is available for download at: http://jcp.org/en/jsr/detail?id=115.
+
+Following JACC, the following algorithm determines how to exactly test for the caller being in a given role:
+
+* Obtain the current _Subject_ from the _PolicyContext_ using the "javax.security.auth.Subject.container" key.
+* Create a _ProtectionDomain_ with the principals obtained from the _Subject_.
+* Create a _WebRoleRefPermission_ with as name parameter the empty string and as actions parameter the role to be tested for.
+* The outcome of this test is the result of calling the _implies_ method of the _Policy_ with the _ProtectionDomain_ and _WebRoleRefPermission_ as parameters.
+
+If the implementation is not done using JACC, which is allowed albeit discouraged, the result must be the same as it would be if JACC was used and with the exception of roles mapped to a named Servlet or named EJB, the result of calling _isCallerInRole()_ MUST be the same as if the corresponding container-specific call had been made (e.g., _HttpServletRequest.isUserInRole()_), and MUST be consistent with the result implied by other specifications that prescribe role-mapping behavior.
+
+The _getAllDeclaredCallerRoles()_ method returns all _static_ roles, meaning the roles that are declared upfront in the *web* application and are discovered during startup. For each role in this list the implementation MUST have ensured that the caller is currently indeed in that role, where "currently" refers to the context from where the call is made and the point in time that the call is made.
+
+Following JACC, the following algorithm determines how to exactly establish the collection of roles that is to be returned by this method:
+
+* Obtain the current _Subject_ from the _PolicyContext_ using the "javax.security.auth.Subject.container" key.
+* Create a _ProtectionDomain_ with the principals obtained from the _Subject_, and use this _ProtectionDomain_ to obtain the _PermissionCollection_ from the _Policy_.
+* Take all _WebRoleRefPermission_ instances from the _PermissionCollection_ and take as candidate roles the result of calling _getActions()_ on each such instance.
+* For each candidate role determine if the caller is currently in that role as specified by the _isCallerInRole()_ method, if true, that role will be included in the collection of roles that are to be returned.
+
+If the implementation is not done using JACC, which is allowed albeit discouraged, the result must be the same as it would be if JACC was used.
+
+=== Testing for access
+
+The _SecurityContect_ interface defines two overloaded methods that allow the application to programmatically test for access to a resource:
+
+[source,java]
+----
+boolean hasAccessToWebResource(String resource);
+
+boolean hasAccessToWebResource(String resource, String... methods);
+----
+
+The _hasAccessToWebResource(String resource)_ method determines if the caller has access to the provided "web resource" using the GET HTTP method, such as specified by section 13.8 of the Servlet specification, and the JACC specification, specifically the _WebResourcePermission_ type.
+
+Following JACC, the following algorithm determines how to exactly test for the caller having access to the given web resource:
+
+* Obtain the current _Subject_ from the _PolicyContext_ using the "javax.security.auth.Subject.container" key.
+* Create a _ProtectionDomain_ with the principals obtained from the _Subject_.
+* Create a _WebResourcePermission_ with as _urlPatternSpec_ parameter the resource to be tested for and as _HTTPMethods_ parameter an array of size one containing the string "GET".  
+* The outcome of this test is the result of calling the _implies_ method of the _Policy_ with the _ProtectionDomain_ and _WebResourcePermission_ as parameters.
+
+If the implementation is not done using JACC, which is allowed albeit discouraged, the result must be the same as it would be if JACC was used (which MUST give exactly the same access as defined by section 13.8 of the Servlet specification).
+
+The _hasAccessToWebResource(String resource, String... methods)_ method is identical to _hasAccessToWebResource(String resource)_ with the difference that instead of the "GET" string the caller supplied strings from the _methods_ parameter are used.
+
 
 === Triggering the Authentication Process
 
@@ -196,6 +245,8 @@ The _authenticate()_ method allows an application to signal to the container tha
 === Relationship to Other Specifications
 
 The _SecurityContect_ implementation is a CDI bean, as defined by the CDI (JSR 346) specification.
+
+Various methods of the _SecurityContect_ are encouraged, but not mandated, to be implemented by using the JACC (JSR 115) specification.
 
 Various specifications in Java EE provide similar or even identical methods to those provided be the _SecurityContect_. It is the intention of this specification to supersede all of those and provide a cross-spec, platform alternative. The following gives an overview:
 
