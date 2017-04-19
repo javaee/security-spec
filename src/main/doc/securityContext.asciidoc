@@ -214,6 +214,24 @@ If the implementation is not done using JACC, which is allowed albeit discourage
 
 The _hasAccessToWebResource(String resource, String... methods)_ method is identical to _hasAccessToWebResource(String resource)_ with the difference that instead of the "GET" string the caller supplied strings from the _methods_ parameter are used.
 
+As an example, consider the following Servlet definition:
+
+[source,java]
+----
+@WebServlet("/protectedServlet")
+@ServletSecurity(@HttpConstraint(rolesAllowed = "foo"))
+public class ProtectedServlet extends HttpServlet { ... }
+----
+
+And the following call to _hasAccessToWebResource_:
+
+[source,java]
+----
+securityContext.hasAccessToWebResource("/protectedServlet")
+----
+
+The above "hasAccessToWebResource" call would return true if and only if the caller is in role "foo".
+
 
 === Triggering the Authentication Process
 
