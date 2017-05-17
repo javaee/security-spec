@@ -215,6 +215,154 @@ It MUST be possible for the definition of an _HttpAuthenticationMechanism_ to ex
 
 The server MAY make available an _HttpAuthenticationMechanism_ other than one supplied by the application, and SHOULD provide configuration to allow control over whether a system _HttpAuthenticationMechanism_, or the application's, is chosen at runtime, when both are present. This enables an application to provide its own _HttpAuthenticationMechanism_, for use when the deployment environment is not configured with identity stores for authentication, while allowing the same application to be deployed, unchanged, in environments where authentication against known identity stores must be enforced.
 
+=== Annotations and Built-In HttpAuthenticationMechanism Beans
+
+A Java EE container MUST support built-in beans for the following _HttpAuthenticationMechanism_ types, to be made available via configuration:
+
+* Basic - Authenticates according to the mechanism as described in 13.6.1 of the Servlet spec (HTTP Basic Authentication). See also RFC 2617. This bean is activated and configured via the _@BasicAuthenticationMechanismDefinition_ annotation.
+* Form - Authenticates according to the mechanism as described in 13.6.3 of the Servlet spec (Form Based Authentication). This bean is activated and configured via the _@FormAuthenticationMechanismDefinition_ annotation.
+* Custom Form - A variant on Form, with the difference that continuing the authentication dialog as described in Servlet 13.6.3 step 3, and further clarified in 13.6.3.1, does not happen by posting back to j_security_check, but by invoking _SecurityContext.authenticate_ with the credentials the application collected. This bean is activated and configured via the _@CustomFormAuthenticationMechanismDefinition_ annotation.
+
+All of all these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.
+
+==== Implementation Notes ====
+
+Implementations are NOT required to provide independent implementations of the above mentioned authentication mechanisms "Basic" and "Form", but are allowed, encouraged even, to use the above annotations as the annotation variant of the _login-config_ element as described by the Servlet spec 14.4 item 18, and additionally implement the described CDI beans as a wrapper or delegator to the existing Servlet based implementations of these mechanisms.
+
+==== Custom Form Notes ====
+
+The Custom Form variant is intended to align better with modern Java EE technologies such as CDI, Expression Language, Bean Validation and specifically JSF.
+
+Below is an example showing how the mechanism can be used with those technologies.
+
+Consider the following JSF Facelet:
+
+[source,xml]
+----
+    <h:messages />
+    
+    <body>
+        <p>
+            Login to continue
+        </p>
+    
+         <form jsf:id="form">
+            <p>
+                <strong>Username </strong> 
+                <input jsf:id="username" type="text" jsf:value="#{loginBacking.username}" />
+            </p>
+            <p>
+                <strong>Password </strong> 
+                <input jsf:id="password" type="password" jsf:value="#{loginBacking.password}" />
+            </p>
+            <p>
+                <input type="submit" value="Login" jsf:action="#{loginBacking.login}" />
+            </p>
+        </form>
+    
+    </body>
+----
+
+The "Username" and "Password" inputs are bound via expression language to properties of a named CDI bean which can have bean validation constraints associated with them, for instance as in the example below:
+
+[source,java]
+----
+@Named
+@RequestScoped
+public class LoginBacking {
+
+    @NotNull
+    @Size(min = 3, max = 15, message="Username must be between 3 and 15 characters")
+    private String username;
+    
+    @NotNull
+    @Size(min = 5, max = 50, message="Password must be between 5 and 50 characters")
+    private String password;
+
+    // ...
+}
+----
+
+The authentication dialog can then be continued as shown in the example below:
+
+[source,java]
+----
+    @Inject
+    private SecurityContext securityContext;
+    
+    @Inject
+    private FacesContext facesContext;
+
+    public void login() {
+         
+        Credential credential = new UsernamePasswordCredential(username, new Password(password));
+        
+        AuthenticationStatus status = securityContext.authenticate(
+            getRequest(facesContext),
+            getResponse(facesContext), 
+            withParams()
+                .credential(credential));
+        
+        if (status.equals(IN_PROGRESS)) {
+            facesContext.responseComplete();
+        } else if (status.equals(FAILURE)) {
+            addError(facesContext, "Authentication failed");
+        }
+
+    }
+----
+
+The annotations are defined as shown in the following sections.
+
+==== Basic Annotation
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface BasicAuthenticationMechanismDefinition {
+    
+    /**
+     * Name of realm that will be send via the <code>WWW-Authenticate</code> header.
+     * <p>
+     * Note that contrary to what happens in some proprietary Servlet products, this
+     * realm name <b>does not</b> couple a named identity store configuration to the 
+     * authentication mechanism.  
+     * 
+     * @return Name of realm
+     */
+    String realmName() default "";
+}
+----
+
+==== Form Annotation
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface FormAuthenticationMechanismDefinition {
+ 
+    @Nonbinding
+    LoginToContinue loginToContinue();
+    
+}
+----
+
+==== Custom Form Annotation
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface CustomFormAuthenticationMechanismDefinition {
+ 
+    @Nonbinding
+    LoginToContinue loginToContinue();
+    
+}
+----
+
 === Relationship to other specifications
 
 An _HttpAuthenticationMechanism_ is a CDI bean, as defined by the CDI (JSR 346) specification. The methods defined by the _HttpAuthenticationMechanism_ closely map to the methods and semantics of a _ServerAuthModule_ as defined by the Servlet Container Profile of the JASPIC (JSR 196) specification (but an _HttpAuthenticationMechanism_ is itself not a _ServerAuthModule_). The servlet container MUST use JASPIC mechanisms to arrange for an _HttpAuthenticationMechanism_ to be placed in service.
@@ -222,3 +370,5 @@ An _HttpAuthenticationMechanism_ is a CDI bean, as defined by the CDI (JSR 346) 
 This specification mandates that when a _ServerAuthModule_ is called by the Servlet container, CDI services (such as the _BeanManager_) are fully available and all scopes that are defined to be active during the _service()_ method of a servlet, or during the _doFilter()_ method of servlet filter are active. Specifically this means that the request scope, session scope and application scope MUST be active, and that a _ServerAuthModule_ method such as _validateRequest_ MUST be capable of 1) obtaining a reference to the CDI _BeanManager_ via programmatic means (for example, by doing a JNDI lookup) and 2) can use this reference to obtain a valid request-scoped, session-scoped or application-scoped bean. This specification *does not* mandate that a _ServerAuthModule_ itself is a CDI bean or that a _ServerAuthModule_ is injectable.
 
 An _HttpAuthenticationMechanism_ implementation is logically equivalent to a build-in authentication mechanism as defined by the Servlet spec, being HTTP Basic Authentication, HTTP Digest Authentication, Form Based Authentication and HTTPS Client Authentication, and more specifically is corresponding to an "additional container authentication mechanism" as described in section 13.6.5 of the Servlet spec.
+
+The _Basic_ and _Form_ authentication mechanisms as defined by this specification are logically equivalent to the similarly named authentication mechanisms in the Servlet spec, respectively 13.6.1 - HTTP Basic Authentication and 13.6.3 - Form Based Authentication. Implementations are allowed to re-implement these authentication mechanisms for this specification, but are encouraged to re-use the existing Servlet implementation, for instance by wrapping these in the CDI bean required by this specification or delegating to them from that CDI bean.
