@@ -21,4 +21,4 @@ The AsciiDoc specification source is located in this directory:
 
 == Making Changes
 
-Master is now at GitHub, mirrored back to java.net.
+To propose changes, please submit a pull request.

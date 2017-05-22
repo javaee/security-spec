@@ -4,7 +4,7 @@
 
     <groupId>javax.security</groupId>
     <artifactId>javax.security-spec</artifactId>
-    <version>1.0-edr</version>
+    <version>1.0-prd</version>
     <packaging>pom</packaging>
 
     <name>EE Security API Specification</name>

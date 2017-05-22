@@ -9,8 +9,8 @@
 // 
 // Specification: JSR-375 Java EE Security API ("Specification")
 // Version: 1.0
-// Status: Early Draft Review
-// Release: March 2017
+// Status: Public Review
+// Release: May 2017
 // 
 // Copyright 2017 Oracle America, Inc.
 // 500 Oracle Parkway, Redwood City, California 94065, U.S.A.
@@ -141,11 +141,46 @@
 
 [[concepts]]
 
-== Concepts
+== Concepts and General Requirements
 
-* authentication
-* authorization
-* credential
-* jaspic
-* java servlet specification
-* token
+This chapter overview information and terminology related to this specification, and also includes a general requirements not specified elsewhere in this document.
+
+=== Terminology And Acronyms
+
+A common understanding of security-related terms is helpful for discussion or specification of security APIs. To that end, we incorporate by reference the excellent https://shiro.apache.org/terminology.html[Apache Shiro Terminology], and define some additional terms used in this document.
+
+Authentication Mechanism ::
+The mechanism by which authentication is performed. This mechanism interacts with the caller to obtain credentials and invokes an identity store to match the given credentials with a known user (identity). If a match is found, the Authentication Mechanism uses the found identity to populate attributes (principals) to build an authenticated Subject. If a match is not found, the Authentication Mechanism reports a failed authentication, the caller is not logged in, and is unable to be given authorization.
+
+Caller, Caller Principal::
+A caller is a user that is making a request to an application, or invoking an application API. A Caller Principal is a Principal object representing that user. This specification uses the term caller in preference to the term user in most contexts.
+
+HAM::
+Abbreviation for _HttpAuthenticationMechanism_, an interface defined by this specification.
+
+Identity Store::
+An Identity Store is a component that can access application-specific security data such as users, roles, and permissions. It can be thought of as a security-specific DAO (Data Access Object). Synonyms: security provider, repository, store, login module (JAAS), identity manager, service provider, relying party, authenticator, user service. Identity Stores usually have a 1-to-1 correlation with a data source such as a relational database, LDAP directory, file system, or other similar resource. As such, implementations of the _IdentityStore_ interface use data source-specific APIs to discover authorization data (roles, permissions, etc), such as JDBC, File IO, Hibernate or JPA, or any other Data Access API.
+
+JASPIC::
+Java Authentication SPI for Containers.
+
+SAM::
+Abbreviation for _ServerAuthModule_, an interface defined by JASPIC.
+
+=== General Requirements
+
+The following general requirments are defined by this specification.
+
+==== Group-To-Role Mapping
+
+Various Java EE specifications define how roles are declared for an application, and how access to application resources can be restricted to users that have a specific role. The specifications are largely silent on the question of how users are assigned to roles, however. Most application servers have proprietary mechanisms for determining the roles a user has.
+
+Application servers MUST provide a default mapping from group names to roles. That is, a caller who is a member of group "foo" is considered to have role "foo". This default mapping MAY be overridden by proprietary configuration, but, when not overridden, provides sensible and predictable behavior for portable applications.
+
+An application MAY provide a default mapping from caller principal names to roles. That is, a caller with the name "bar" is considered to have role "bar". This default mapping MAY be overridden by proprietary configuration.
+
+==== Caller Principal Types
+
+This specification defines a principal type called _CallerPrincipal_ to represent the identity of an application caller. Historically, application servers have used different principal types to represent an application's callers, and various Java EE specifications (e.g., JASPIC), provide abstractions to accomodate, "the container's representation of the caller principal".
+
+This specification RECOMMENDS that Java EE application servers that rely on container-specific caller principal types derive those types by extending _CallerPrincipal_, so that portable applications can rely on a consistent representation of the caller principal.

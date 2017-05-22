@@ -9,8 +9,8 @@
 // 
 // Specification: JSR-375 Java EE Security API ("Specification")
 // Version: 1.0
-// Status: Early Draft Review
-// Release: March 2017
+// Status: Public Review
+// Release: May 2017
 // 
 // Copyright 2017 Oracle America, Inc.
 // 500 Oracle Parkway, Redwood City, California 94065, U.S.A.
@@ -142,9 +142,9 @@
 :sectanchors:
 :doctype: book
 :compat-mode:
-= Java EE Security API 1.0 (EDR 1)
-List of Authors
-v${project.version}
+= Java EE Security API
+Public Review Draft
+v${project.version}, May 19, 2017
 include::license.asciidoc[]
 
 include::preface.asciidoc[]

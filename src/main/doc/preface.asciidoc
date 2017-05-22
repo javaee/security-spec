@@ -9,8 +9,8 @@
 // 
 // Specification: JSR-375 Java EE Security API ("Specification")
 // Version: 1.0
-// Status: Early Draft Review
-// Release: March 2017
+// Status: Public Review
+// Release: May 2017
 // 
 // Copyright 2017 Oracle America, Inc.
 // 500 Oracle Parkway, Redwood City, California 94065, U.S.A.
@@ -144,6 +144,31 @@
 
 == Preface
 
-This document is Early Draft Review 1 (EDR 1) of the Java EE Security API 1.0 Specification (link:https://jcp.org/en/jsr/detail?id=375[JSR-375^]).
+This document is the Public Review Draft (PRD) of the Java EE Security API 1.0 Specification (https://jcp.org/en/jsr/detail?id=375[JSR-375]).
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in https://tools.ietf.org/html/rfc2119[RFC 2119].
+
+=== Expert Group Members
+
+* Adam Bien
+* David Blevins (Tomitribe)
+* Rudy De Busscher
+* Ivar Grimstad
+* Les Hazlewood (Stormpath, Inc.)
+* Will Hopkins (Oracle)
+* Werner Keil
+* Matt Konda (Jemurai)
+* Alexander Kosowski (Oracle)
+* Darran Lofthouse (Red Hat)
+* Jean-Louis Monteiro (Tomitribe)
+* Ajay Reddy (IBM)
+* Pedro Igor Silva (Red Hat)
+* Arjan Tijms
+
+*Contributors:*
+
+* Elder Moraes	
+* Fatih Mutluay	
+* Reza Rahman
 
 :numbered:
