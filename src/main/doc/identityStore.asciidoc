@@ -155,7 +155,7 @@ _IdentityStore_ is intended primarily for use by _HttpAuthenticationMechanism_ i
 
 A significant advantage of using _HttpAuthenticationMechanism_ and _IdentityStore_ over container-provided BASIC or FORM implementations is that it allows an application to control the identity stores it will authenticate against, in a standard, portable way.
 
-An _IdentityStore_ is expected to perform only perform context- and environment-independent processing (for example, verifying usernames and passwords and returning caller data). _IdentityStore_ should provide a pure _{credentials in, caller data out}_ function. It should not directly interact with the caller, or attempt to examine request context or application state.
+An _IdentityStore_ is expected to perform only context- and environment-independent processing (for example, verifying usernames and passwords and returning caller data). It should provide a pure _{credentials in, caller data out}_ function. An _IdentityStore_ should not directly interact with the caller, or attempt to examine request context or application state.
 
 The _IdentityStoreHandler_ interface defines a mechanism for invoking on _IdentityStore_ to validate a user credential. An _HttpAuthenticationMechanism_ (or other caller) should not interact directly with an _IdentityStore_, but instead invoke the _IdentityStoreHandler_ to validate credentials. The _IdentityStoreHandler_, in turn, invokes on the _IdentityStore_. An _IdentityStoreHandler_ can also orchestrate an authentication across multiple _IdentityStore_ instances, returning an aggregated result.
 
