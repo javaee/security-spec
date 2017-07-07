@@ -142,6 +142,7 @@
 :sectanchors:
 :doctype: book
 :compat-mode:
+:pdf-page-size: Letter
 = Java EE Security API
 Public Review Draft
 v${project.version}, May 19, 2017
