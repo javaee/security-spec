@@ -202,7 +202,11 @@ The _secureResponse()_ method is provided to allow post processing on the respon
 
 The _cleanSubject()_ is provided to allow for cleanup after a caller is logged out. For example, an authentication mechanism that stores state within a cookie can remove that cookie here.
 
-The _HttpMessageContext_ interface defines methods that an _HttpAuthenticationMechanism_ can invoke to communicate with the JASPIC _ServerAuthModule_ (bridge module) that invokes it. The _HttpMessageContextWrapper_ provides an implementation of the interface, and can be used, in a manner similar to _HttpServletRequestWrapper_, to provide custom behavior. See javadoc for a detailed description of _HttpMessageContext_ and _HttpMessageContextWrapper_. See below for more on the JASPIC bridge module.
+The _HttpMessageContext_ interface defines methods that an _HttpAuthenticationMechanism_ can invoke to communicate with the JASPIC _ServerAuthModule_ (bridge module) that invokes it. The container MUST provide an implementation of the interface that supports the necessary container integrations.
+
+The _HttpMessageContextWrapper_ class implements a wrapper can be used, in a manner similar to _HttpServletRequestWrapper_, to provide custom behavior.
+
+See javadoc for a detailed description of _HttpMessageContext_ and _HttpMessageContextWrapper_. See below for more on the JASPIC bridge module.
 
 === Installation and Configuration
 

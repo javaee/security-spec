@@ -184,3 +184,15 @@ An application server MAY provide a default mapping from caller principal names 
 This specification defines a principal type called _CallerPrincipal_ to represent the identity of an application caller. Historically, application servers have used different principal types to represent an application's callers, and various Java EE specifications (e.g., JASPIC), provide abstractions to accomodate, "the container's representation of the caller principal".
 
 This specification RECOMMENDS that Java EE application servers that rely on container-specific caller principal types derive those types by extending _CallerPrincipal_, so that portable applications can rely on a consistent representation of the caller principal.
+
+However, we also distinguish here between a "container caller principal" and an "application caller principal", and explicitly allow for each to be represented by a different _Principal_ type.
+
+The container caller principal is a _Principal_ that the container uses to represent a caller's identity. An implementation of this specification MAY choose any _Principal_ type for this purpose. The type chosen may carry additional information, or provide unique behaviors.
+
+An application caller principal is a _Principal_ that an application, or an implementation of, e.g., an _HttpAuthenticationMechanism_, uses to represent a caller's identity. An application MAY choose any _Principal_ type for that purpose. The type chosen may carry additional information, or provide unique behaviors.
+
+Because both containers and applications can have legitimate requirements for specific _Principal_ types to represent a caller, and those types may differ, it MUST be possible for the container to establish both the container's and the application's caller principal as the caller's identity; for example, by including both in a Subject representing the caller.
+
+When both a container caller principal and an application caller principal are present, the value obtained by calling _getName()_ on both principals MUST be the same.
+
+When no specific application caller principal is supplied during authentication, the caller's identity should be represented by a single principal, the container's caller principal.

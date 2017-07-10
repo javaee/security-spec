@@ -161,10 +161,19 @@ The _SecurityContext_ interface defines two methods that allow the application t
 ----
 Principal getCallerPrincipal();
 
+<T extends Principal>
+Set<T> getPrincipalsByType(Class<T> pType);
+
 boolean isCallerInRole(String role);
 ----
 
-The _getCallerPrincipal()_ method retrieves the _Principal_ representing the caller. 
+The _getCallerPrincipal()_ method retrieves the _Principal_ representing the caller. This is the container-specific representation of the caller principal, and the type may differ from the type of the caller principal originally established by an _HttpAuthenticationMechanism_. This method returns null for an unauthenticated caller. (Note that this behavior differs from the behavior of _EJBContext.getCallerPrincipal()_, which returns a principal with an null/empty name for an unauthenticated caller.)
+
+The _getPrincipalsByType()_ method retrieves all principals of the given type. This method can be used to retrieve an application-specific caller principal established during authentication. This method is primarily useful in the case that the container's caller principal is a different type than the application caller principal, and the application needs specific information behavior available only from the application principal. This method returns an empty _Set_ if the caller is unauthenticated, or if the requested type is not found.
+
+Where both a container caller principal and an application caller principal are present, the value returned by _getName()_ MUST be the same for both principals.
+
+See the <<concepts.asciidoc#concepts,Concepts>> chapter for more information on principal handling.
 
 The _isCallerInRole()_ method takes a String argument that represents the role that is to be tested for. It is undefined by this specification how the role determination is made, but the result MUST be the same as if the corresponding container-specific call had been made (i.e., _HttpServletRequest.isUserInRole()_, _EJBContext.isCallerInRole()_), and MUST be consistent with the result implied by other specifications that prescribe role-mapping behavior.
 
