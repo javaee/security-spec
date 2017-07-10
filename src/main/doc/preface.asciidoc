@@ -148,7 +148,13 @@ This document is the Public Review Draft (PRD) of the Java EE Security API 1.0 S
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in https://tools.ietf.org/html/rfc2119[RFC 2119].
 
-=== Expert Group Members
+=== Expert Group
+
+==== Specification Lead
+
+* Will Hopkins (Oracle)
+
+==== Expert Group Members
 
 * Adam Bien
 * David Blevins (Tomitribe)
@@ -165,10 +171,13 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 * Pedro Igor Silva (Red Hat)
 * Arjan Tijms
 
-*Contributors:*
+==== Contributors
 
-* Elder Moraes	
-* Fatih Mutluay	
+* Guillermo González de Agüero
+* John Hogan
+* Elder Moraes
+* Fatih Mutluay
 * Reza Rahman
+* Ashley Richardson
 
 :numbered:

@@ -170,18 +170,18 @@ The _isCallerInRole()_ method takes a String argument that represents the role t
 
 === Testing for access
 
-The _SecurityContext_ interface defines two overloaded methods that allow the application to programmatically test for access to a resource:
+The _SecurityContext_ interface defines a method for programmatically testing access to a resource:
 
 [source,java]
 ----
-boolean hasAccessToWebResource(String resource);
-
 boolean hasAccessToWebResource(String resource, String... methods);
 ----
 
-The _hasAccessToWebResource(String resource)_ method determines if the caller has access to the provided "web resource" using the GET HTTP method, as determined by the security constraints configured for the application. See section 13.8 of the Servlet specification for a description of web application security constraints.
+The _hasAccessToWebResource()_ method determines if the caller has access to the specified web resource for the specified HTTP methods, as determined by the security constraints configured for the application. See section 13.8 of the Servlet specification for a description of web application security constraints.
 
-The _hasAccessToWebResource(String resource, String... methods)_ method is identical to _hasAccessToWebResource(String resource)_ with the difference that instead of the "GET" string the caller supplied strings from the _methods_ parameter are used.
+The resource parameter is an _URLPatternSpec_ that identifies an application-specific web resource. See javadoc for more detail.
+
+This method can only be used to check access to resources in the current application -- it cannot be called cross-application, or cross-container, to check access to resources in a different application.
 
 As an example, consider the following Servlet definition:
 
@@ -196,7 +196,7 @@ And the following call to _hasAccessToWebResource_:
 
 [source,java]
 ----
-securityContext.hasAccessToWebResource("/protectedServlet")
+securityContext.hasAccessToWebResource("/protectedServlet", GET)
 ----
 
 The above "hasAccessToWebResource" call would return true if and only if the caller is in role "foo".

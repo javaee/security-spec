@@ -202,6 +202,8 @@ The _secureResponse()_ method is provided to allow post processing on the respon
 
 The _cleanSubject()_ is provided to allow for cleanup after a caller is logged out. For example, an authentication mechanism that stores state within a cookie can remove that cookie here.
 
+The _HttpMessageContext_ interface defines methods that an _HttpAuthenticationMechanism_ can invoke to communicate with the JASPIC _ServerAuthModule_ (bridge module) that invokes it. The _HttpMessageContextWrapper_ provides an implementation of the interface, and can be used, in a manner similar to _HttpServletRequestWrapper_, to provide custom behavior. See javadoc for a detailed description of _HttpMessageContext_ and _HttpMessageContextWrapper_. See below for more on the JASPIC bridge module.
+
 === Installation and Configuration
 
 An _HttpAuthenticationMechanism_ must be a CDI bean, and is therefore visible to the container through CDI if it is packaged in a bean archive, which generally includes Java EE modules and application archives, as well as other archives and classes that are not part of an application, but are required by the Java EE specification to be visible to applications. See the CDI specification for details on bean archives and bean discovery. An _HttpAuthenticationMechanism_ is assumed to be normal scoped.
@@ -214,9 +216,9 @@ The container decides which _HttpAuthenticationMechanism_ to place in service us
 
 * The container MAY override an application's chosen _HttpAuthenticationMechanism_ with one selected by the container, but SHOULD do so only if explicitly configured to.
 * If the container does not override the application, it MUST place in service any _HttpAuthenticationMechanism_ that is provided, either directly or via annotation, by the application.
-* If the application makes more than one _HttpAuthenticationMechanism_ available, either directly or via annotation or both, the results are undefined.
+* If the application makes more than one _HttpAuthenticationMechanism_ available, either directly or via annotation or both, the results are undefined by this specification.
 * If the application does not supply an _HttpAuthenticationMechanism_, or select one of the built-in mechanisms, the container MAY choose an _HttpAuthenticationMechanism_ to place in service, but is NOT REQUIRED to do so.
-* If neither the application nor the container makes an _HttpAuthenticationMechanism_ available, then _HttpAuthenticationMechanism_ is not used.
+* If the application does not make an _HttpAuthenticationMechanism_ available, and the container does not choose one to place in service, then _HttpAuthenticationMechanism_ is not used.
 
 The container MUST use JASPIC when placing an _HttpAuthenticationMechanism_ in service. The container MUST supply a "bridge" _ServerAuthModule_ that integrates _HttpAuthenticationMechanism_ with JASPIC. The bridge module MUST look up the correct _HttpAuthenticationMechanism_ using CDI, then delegate to the _HttpAuthenticationMechanism_ when the bridge module's methods are invoked. Since the method signatures and return values of the two interfaces are similar, but not the same, the bridge module MUST convert back and forth.
 
@@ -234,13 +236,152 @@ A Java EE container MUST support built-in beans for the following _HttpAuthentic
 
 All of these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.
 
-All of the built-in beans MUST support authentication using _IdentityStore_, as described in the <<identityStore.asciidoc#identity-store,Identity Store>> section, but MAY fall-back to container-specific methods if no _IdentityStore_ is available.
+All of the built-in beans MUST support authentication using _IdentityStore_, as described in the <<identityStore.asciidoc#identity-store,Identity Store>> chapter, but MAY fall-back to container-specific methods if no _IdentityStore_ is available.
+
+See also <<Implementation Notes>> later in this chapter.
+
+The annotations are defined as shown in the following sections.
+
+==== BASIC Annotation
+
+The following annotation is used to configure the built-in BASIC authentication mechanism.
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface BasicAuthenticationMechanismDefinition {
+
+    /**
+     * Name of realm that will be sent via the <code>WWW-Authenticate</code> header.
+     * <p>
+     * Note that contrary to what happens in some proprietary Servlet products, this
+     * realm name <b>does not</b> couple a named identity store configuration to the 
+     * authentication mechanism.  
+     * 
+     * @return Name of realm
+     */
+    String realmName() default "";
+}
+----
+
+==== FORM Annotation
+
+The following annotation is used to configure the built-in FORM authentication mechanism.
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface FormAuthenticationMechanismDefinition {
+ 
+    @Nonbinding
+    LoginToContinue loginToContinue();
+}
+----
+
+See also the _LoginToContinue_ annotation below.
+
+==== Custom FORM Annotation
+
+The following annotation is used to configure the built-in Custom FORM authentication mechanism.
+See also <<Custom FORM Notes>> later in this chapter.
+
+[source,java]
+----
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface CustomFormAuthenticationMechanismDefinition {
+ 
+    @Nonbinding
+    LoginToContinue loginToContinue();
+}
+----
+
+See also the _LoginToContinue_ annotation below.
+
+==== LoginToContinue Annotation
+
+The _LoginToContinue_ annotation is used to configure the login page, error page, and redirect/forward behavior for a form-based authentication mechanism:
+
+[source,java]
+----
+@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface LoginToContinue {
+
+    @Nonbinding
+    String loginPage() default "/login";
+
+    @Nonbinding
+    boolean useForwardToLogin() default true;
+
+    @Nonbinding
+    String errorPage() default "/login-error";
+}
+----
+
+==== RememberMe Annotation
+
+The _RememberMe_ annotation is used to configure a _RememberMeIdentityStore_, which must be provided by the application. To use _RememberMe_, the application must provide an _HttpAuthenticationMechanism_ (or configure one of the built-in mechanisms), and annotate the _HttpAuthenticationMechanism_ (or built-in annotation) with the _RememberMe_ annotation.
+
+[source,java]
+----
+@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface RememberMe {
+
+    @Nonbinding
+    int cookieMaxAgeSeconds() default 86400; // 1 day
+
+    @Nonbinding
+    boolean cookieSecureOnly() default true;
+
+    @Nonbinding
+    boolean cookieHttpOnly() default true;
+
+    @Nonbinding
+    String cookieName() default "JREMEMBERMEID";
+
+    @Nonbinding
+    String isRememberMeExpression() default "";
+}
+----
+
+The container MUST provide an interceptor implementation that backs the _RememberMe_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
+
+Intercepting _validateRequest()_::
+* Determine whether there is a RememberMe cookie in the request
+* If the cookie is present:
+** Use it to construct a _RememberMeCredential_ and call the _validate()_ method of the _RememberMeIdentityStore_.
+** If the validate succeeds, call _HttpMessageContext.notifyContainerAboutLogin(), passing the CallerPrincipal and CallerGroups returned by _validate().
+** If the validate fails, remove the cookie from the request.
+* If no cookie is present, or if the attempt to validate a cookie failed, authenticate the caller normally by calling _proceed() on the _InvocationContext_.
+* If authentication succeeds, and the caller has requested to be remembered, as determined by evaluating the _isRememberMeExpression()_, then:
+** Call the _generateLoginToken()_ method of the _RememberMeIdentityStore_.
+** Set the new cookie with parameters as configured on the _RememberMe_ annotation.
+
+Intercepting _secureResponse()_::
+* The _secureResponse() method SHOULD NOT be intercepted.
+
+Intercepting _cleanSubject()_::
+* If there is a RememberMe cookie in the request, then:
+** Remove the cookie.
+** Call the _removeLoginToken()_ method of the _RememberMeIdentityStore_.
+
+See also the description of _RememberMeIdentityStore_ in the <<identityStore.asciidoc#identity-store,Identity Store>> chapter.
 
 ==== Implementation Notes ====
 
 The Servlet spec, section 14.4 item 18, describes requirements for supporting BASIC and FORM authentication via the web.xml _login-config_ element. This specification requires that implementations of BASIC and FORM be made available as _HttpAuthenticationMechanism_ CDI beans. The servlet container is NOT REQUIRED to implement separate and independent mechanisms to satisfy each requirement. Instead, the container MAY choose to provide a single mechanism, for each of BASIC and FORM, that meets the requirements of both specifications; i.e., an implementation that can be configured via _login-config_, but which is also made available as an _HttpAuthenticationMechanism_ if the application uses the corresponding annotation. Equally, the container is NOT REQUIRED to provide a unified implementation, and MAY satisfy the two requirements using separate, independent implementations.
 
 An implementation of BASIC or FORM is NOT REQUIRED to support _IdentityStore_ when configured via _login-config_, regardless of whether the container has provided a single mechanism or separate mechanisms to satisfy the _login-config_ and _HttpAuthenticationMechanism_ requirements. Implementations MAY support _IdentityStore_ for all configuration methods.
+
+If an application provides an _HttpAuthenticationMechanism_ and also configures a _login-config_ element in web.xml, the container SHOULD fail deployment, but MAY choose to proceed, using only the _HttpAuthenticationMechanism_ (i.e., ignoring the _login-config_ from web.xml).
 
 ==== Custom FORM Notes ====
 
@@ -317,57 +458,6 @@ public class LoginBacking {
         }
         
     }
-----
-
-The annotations are defined as shown in the following sections.
-
-==== BASIC Annotation
-
-[source,java]
-----
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface BasicAuthenticationMechanismDefinition {
-    
-    /**
-     * Name of realm that will be send via the <code>WWW-Authenticate</code> header.
-     * <p>
-     * Note that contrary to what happens in some proprietary Servlet products, this
-     * realm name <b>does not</b> couple a named identity store configuration to the 
-     * authentication mechanism.  
-     * 
-     * @return Name of realm
-     */
-    String realmName() default "";
-}
-----
-
-==== FORM Annotation
-
-[source,java]
-----
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface FormAuthenticationMechanismDefinition {
- 
-    @Nonbinding
-    LoginToContinue loginToContinue();
-    
-}
-----
-
-==== Custom FORM Annotation
-
-[source,java]
-----
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface CustomFormAuthenticationMechanismDefinition {
- 
-    @Nonbinding
-    LoginToContinue loginToContinue();
-    
-}
 ----
 
 === Relationship to other specifications

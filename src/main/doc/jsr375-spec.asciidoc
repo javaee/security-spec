@@ -145,7 +145,7 @@
 :pdf-page-size: Letter
 = Java EE Security API
 Public Review Draft
-v${project.version}, May 19, 2017
+v${project.version}, July 9, 2017
 include::license.asciidoc[]
 
 include::preface.asciidoc[]
