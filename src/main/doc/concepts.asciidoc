@@ -147,7 +147,7 @@ This chapter overview information and terminology related to this specification,
 
 === Terminology And Acronyms
 
-A common understanding of security-related terms is helpful for discussion or specification of security APIs. To that end, we incorporate by reference the excellent https://shiro.apache.org/terminology.html[Apache Shiro Terminology], and define some additional terms used in this document.
+A common understanding of security-related terms is helpful for discussion or specification of security APIs. To that end, we incorporate by reference the excellent Apache Shiro Terminology [https://shiro.apache.org/terminology.html[SHIROTERM]], and define some additional terms used in this document.
 
 Authentication Mechanism ::
 The mechanism by which authentication is performed. This mechanism interacts with the caller to obtain credentials and invokes an identity store to match the given credentials with a known user (identity). If a match is found, the Authentication Mechanism uses the found identity to populate attributes (principals) to build an authenticated Subject. If a match is not found, the Authentication Mechanism reports a failed authentication, the caller is not logged in, and is unable to be given authorization.
@@ -161,8 +161,11 @@ Abbreviation for _HttpAuthenticationMechanism_, an interface defined by this spe
 Identity Store::
 An Identity Store is a component that can access application-specific security data such as users, groups, roles, and permissions. It can be thought of as a security-specific DAO (Data Access Object). Synonyms: security provider, repository, store, login module (JAAS), identity manager, service provider, relying party, authenticator, user service. Identity Stores usually have a 1-to-1 correlation with a data source such as a relational database, LDAP directory, file system, or other similar resource. As such, implementations of the _IdentityStore_ interface use data source-specific APIs to discover authorization data (roles, permissions, etc), such as JDBC, File IO, Hibernate or JPA, or any other Data Access API.
 
+JACC::
+JSR-115, "Java Authorization Contract for Containers", version 1.5 [https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html[JACC]].
+
 JASPIC::
-The Java Authentication SPI for Containers (JSR-196).
+JSR-196, "Java Authentication SPI for Containers", version 1.0 [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
 SAM::
 Abbreviation for _ServerAuthModule_, an interface defined by JASPIC.
@@ -196,3 +199,26 @@ Because both containers and applications can have legitimate requirements for sp
 When both a container caller principal and an application caller principal are present, the value obtained by calling _getName()_ on both principals MUST be the same.
 
 When no specific application caller principal is supplied during authentication, the caller's identity should be represented by a single principal, the container's caller principal.
+
+==== Expression Language Support
+
+This specification defines a number of annotations:
+
+[source,java]
+----
+DatabaseIdentityStoreDefinition
+LdapIdentityStoreDefinition
+
+BasicAuthenticationMechanismDefinition
+CustomFormAuthenticationMechanismDefinition
+FormAuthenticationMechanismDefinition
+
+LoginToContinue
+RememberMe
+----
+
+Attributes on these annotations can be provided either as actual values, or as Expression Language 3.0 expressions. In cases where the return type of an attribute is not String, an "EL alternative" attribute is provided, with "Expression" appended to the name. If an "EL alternative" attribute has a non-empty value, it takes precedence over the attribute it's an alternative to, and must contain a valid EL expression that evaluates to the same type as the attribute it's an alternative to.
+
+For more information, see the package javadoc for the javax.security.enterprise package.
+ 
+Expression Language 3.0 is specified by JSR-341, "Expression Language", version 3.0 [https://jcp.org/aboutJava/communityprocess/final/jsr341/index.html[EL30]]

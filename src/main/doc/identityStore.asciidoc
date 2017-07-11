@@ -159,7 +159,7 @@ An _IdentityStore_ is expected to perform only context- and environment-independ
 
 The _IdentityStoreHandler_ interface defines a mechanism for invoking on _IdentityStore_ to validate a user credential. An _HttpAuthenticationMechanism_ (or other caller) should not interact directly with an _IdentityStore_, but instead invoke the _IdentityStoreHandler_ to validate credentials. The _IdentityStoreHandler_, in turn, invokes on the _IdentityStore_. An _IdentityStoreHandler_ can also orchestrate an authentication across multiple _IdentityStore_ instances, returning an aggregated result.
 
-A default _IdentityStoreHandler_ implementation is supplied by the container, but applications can also supply their own implementation. The orchestration behavior of the default _IdentityStoreHandler_ is described in <<Handling Multiple Identity Stores>> below.
+A default _IdentityStoreHandler_ implementation is supplied by the container, but applications can also supply their own implementation. The orchestration behavior of the default _IdentityStoreHandler_ is described in the "<<Handling Multiple Identity Stores>>" section below.
 
 === Interface and Theory of Operation
 
@@ -290,7 +290,8 @@ The _IdentityStore_ interface includes methods for an implementation to declare 
 
 [source,java]
 ----
-enum ValidationType { VALIDATE, PROVIDE_GROUPS };
+enum ValidationType { VALIDATE, PROVIDE_GROUPS }
+
 Set<ValidationType> DEFAULT_VALIDATION_TYPES = EnumSet.of(VALIDATE, PROVIDE_GROUPS);
 
 default int priority() {
@@ -375,7 +376,7 @@ public interface RememberMeIdentityStore {
 
 _RememberMeIdentityStore_ can only be used when an application includes an _HttpAuthenticationMechanism_ or configures one of the built-in ones. The application must specify the _RememberMe_ annotation on the _HttpAuthenticationMechanism_ to configure the _RememberMeIdentityStore_.
 
-See the description of the _RememberMe_ annotation in the <<authenticationMechanism.asciidoc#authentication-mechanism,Authentication Mechanism>> chapter.
+See the description of the _RememberMe_ annotation in Chapter 2, "<<authenticationMechanism.asciidoc#authentication-mechanism,Authentication Mechanism>>".
 
 === Installation and Configuration
 
@@ -383,7 +384,7 @@ Installation of an _IdentityStore_ depends on the CDI specification. That is, an
 
 It MUST be possible for the definition of an _IdentityStore_ to exist within the application archive. Alternatively such definition MAY also exists outside the application archive, for example in a jar added to the classpath of an application server. 
 
-As described above, in <<Declaring Capabilities>>, the _IdentityStore_ interface includes two methods, _validationTypes()_ and _priority()_, that enable an _IdentityStore_ to declare its capabilities. Those capabilities may be intrinsic -- determined by the __IdentityStore__'s implementation -- or they may be determined by the __IdentityStore__'s configuration.
+As described above, in the "<<Declaring Capabilities>>" section, the _IdentityStore_ interface includes two methods, _validationTypes()_ and _priority()_, that enable an _IdentityStore_ to declare its capabilities. Those capabilities may be intrinsic -- determined by the __IdentityStore__'s implementation -- or they may be determined by the __IdentityStore__'s configuration.
 
 === Annotations and Built-In IdentityStore Beans
 
@@ -406,29 +407,56 @@ The corresponding annotations are defined as shown in the following sections.
 @Target(TYPE)
 public @interface LdapIdentityStoreDefinition {
 
+    enum LdapSearchScope { ONE_LEVEL, SUBTREE }
+
     String url() default "";
+
+    String bindDn() default "";
+
+    String bindDnPassword() default "";
 
     String callerBaseDn() default "";
 
     String callerNameAttribute() default "uid";
 
-    String groupBaseDn() default "";
+    String callerSearchBase() default "";
+
+    String callerSearchFilter() default "";
+
+    LdapSearchScope callerSearchScope() default LdapSearchScope.SUBTREE;
+
+    String callerSearchScopeExpression() default "";
+
+    String groupSearchBase() default "";
+
+    String groupSearchFilter() default "";
+
+    LdapSearchScope groupSearchScope() default LdapSearchScope.SUBTREE;
+
+    String groupSearchScopeExpression() default "";
 
     String groupNameAttribute() default "cn";
 
-    String groupCallerDnAttribute() default "member";
+    String groupMemberAttribute() default "member";
 
-    String baseDn() default "";
+    String groupMemberOfAttribute() default "memberOf";
 
-    String password() default "";
+    int readTimeout() default 0;
 
-    String searchBase() default "";
+    String readTimeoutExpression() default "";
 
-    String searchExpression() default "";
+    int maxResults() default 1000;
+
+    String maxResultsExpression() default "";
 
     int priority() default 80;
 
+    String priorityExpression() default "";
+
     ValidationType[] useFor() default {VALIDATE, PROVIDE_GROUPS};
+
+    String useForExpression() default "";
+
 }
 ----
 
@@ -440,22 +468,24 @@ public @interface LdapIdentityStoreDefinition {
 @Target(TYPE)
 public @interface DataBaseIdentityStoreDefinition {
 
-    String dataSourceLookup() default "java:comp/DefaultDataSource"; // default data source
+    String dataSourceLookup() default "java:comp/DefaultDataSource";
 
-    String callerQuery();
-	
-    String groupsQuery();
-	
-    String hashAlgorithm() default ""; // default no hash (for now) todo: make enum?
-	
-    String hashEncoding() default ""; // default no encoding (for now) todo: make enum?
+    String callerQuery() default "";
+
+    String groupsQuery() default "";
+
+    String hashAlgorithm() default "PBKDF2";
 
     int priority() default 70;
 
+    String priorityExpression() default "";
+
     ValidationType[] useFor() default {VALIDATE, PROVIDE_GROUPS};
+
+    String useForExpression() default "";
 }
 ----
 
 === Relationship to Other Specifications
 
-_IdentityStore_ and _IdentityStoreHandler_ implementations are CDI beans, as defined by the CDI (JSR 346) specification.
+_IdentityStore_ and _IdentityStoreHandler_ implementations are CDI beans, as defined by [https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html[CDI12]].

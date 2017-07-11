@@ -161,8 +161,7 @@ The _SecurityContext_ interface defines two methods that allow the application t
 ----
 Principal getCallerPrincipal();
 
-<T extends Principal>
-Set<T> getPrincipalsByType(Class<T> pType);
+<T extends Principal> Set<T> getPrincipalsByType(Class<T> pType);
 
 boolean isCallerInRole(String role);
 ----
@@ -173,11 +172,11 @@ The _getPrincipalsByType()_ method retrieves all principals of the given type. T
 
 Where both a container caller principal and an application caller principal are present, the value returned by _getName()_ MUST be the same for both principals.
 
-See the <<concepts.asciidoc#concepts,Concepts>> chapter for more information on principal handling.
+See the Chapter 1, "<<concepts.asciidoc#concepts,Concepts>>", for more information on principal handling.
 
 The _isCallerInRole()_ method takes a String argument that represents the role that is to be tested for. It is undefined by this specification how the role determination is made, but the result MUST be the same as if the corresponding container-specific call had been made (i.e., _HttpServletRequest.isUserInRole()_, _EJBContext.isCallerInRole()_), and MUST be consistent with the result implied by other specifications that prescribe role-mapping behavior.
 
-=== Testing for access
+=== Testing for Access
 
 The _SecurityContext_ interface defines a method for programmatically testing access to a resource:
 
@@ -186,9 +185,9 @@ The _SecurityContext_ interface defines a method for programmatically testing ac
 boolean hasAccessToWebResource(String resource, String... methods);
 ----
 
-The _hasAccessToWebResource()_ method determines if the caller has access to the specified web resource for the specified HTTP methods, as determined by the security constraints configured for the application. See section 13.8 of the Servlet specification for a description of web application security constraints.
+The _hasAccessToWebResource()_ method determines if the caller has access to the specified web resource for the specified HTTP methods, as determined by the security constraints configured for the application. See section 13.8 of [https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html[SERVLET31]] for a description of web application security constraints.
 
-The resource parameter is an _URLPatternSpec_ that identifies an application-specific web resource. See javadoc for more detail.
+The resource parameter is an _URLPatternSpec_ that identifies an application-specific web resource. See the javadoc for more detail.
 
 This method can only be used to check access to resources in the current application -- it cannot be called cross-application, or cross-container, to check access to resources in a different application.
 
@@ -201,18 +200,18 @@ As an example, consider the following Servlet definition:
 public class ProtectedServlet extends HttpServlet { ... }
 ----
 
-And the following call to _hasAccessToWebResource_:
+And the following call to _hasAccessToWebResource()_:
 
 [source,java]
 ----
 securityContext.hasAccessToWebResource("/protectedServlet", GET)
 ----
 
-The above "hasAccessToWebResource" call would return true if and only if the caller is in role "foo".
+The above _hasAccessToWebResource()_ call would return true if and only if the caller is in role "foo".
 
 === Triggering the Authentication Process
 
-The _SecurityContext_ interface defines two overloaded methods that allow the application to programmatically trigger the authentication process:
+The _SecurityContext_ interface defines a method that allows an application to programmatically trigger the authentication process:
 
 [source,java]
 ----
@@ -227,14 +226,14 @@ The _authenticate()_ method allows an application to signal to the container tha
 
 === Relationship to Other Specifications
 
-The _SecurityContext_ implementation is a CDI bean, as defined by the CDI (JSR 346) specification.
+The _SecurityContext_ implementation is a CDI bean, as defined by [https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html[CDI12]].
 
-Various specifications in Java EE provide similar or even identical methods to those provided be the _SecurityContext_. It is the intention of this specification to eventually supersede those methods and provide a cross-spec, platform alternative. The following gives an overview:
+Various specifications in Java EE provide similar or even identical methods to those provided be the _SecurityContext_. It is the intention of this specification to eventually supersede those methods and provide a cross-specification, platform alternative. The following gives an overview:
 
-* Servlet spec - _HttpServletRequest#getUserPrincipal_, _HttpServletRequest#isUserInRole_
-* EJB spec - _EJBContext#getCallerPrincipal_, _EJBContext#isCallerInRole_
-* JAX-WS spec - _WebServiceContext#getUserPrincipal_, _WebServiceContext#isUserInRole_
-* JAX-RS spec - _SecurityContext#getUserPrincipal_, _SecurityContext#isUserInRole_
-* JSF spec - _ExternalContext#getUserPrincipal_, _ExternalContext#isUserInRole_
+* Servlet - _HttpServletRequest#getUserPrincipal_, _HttpServletRequest#isUserInRole_
+* EJB - _EJBContext#getCallerPrincipal_, _EJBContext#isCallerInRole_
+* JAX-WS - _WebServiceContext#getUserPrincipal_, _WebServiceContext#isUserInRole_
+* JAX-RS - _SecurityContext#getUserPrincipal_, _SecurityContext#isUserInRole_
+* JSF - _ExternalContext#getUserPrincipal_, _ExternalContext#isUserInRole_
 * CDI - _@Inject Principal_
 * WebSockets - _Session#getUserPrincipal_

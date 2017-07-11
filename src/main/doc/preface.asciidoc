@@ -144,40 +144,60 @@
 
 == Preface
 
-This document is the Public Review Draft (PRD) of the Java EE Security API 1.0 Specification (https://jcp.org/en/jsr/detail?id=375[JSR-375]).
+This document is the Proposed Final Draft (PFD) of the specification for JSR-375, "Java EE Security API", version 1.0 [https://jcp.org/en/jsr/detail?id=375[SECAPI]].
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in https://tools.ietf.org/html/rfc2119[RFC 2119].
+=== Notational Conventions
 
-=== Expert Group
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119, "Key words for use in RFCs to Indicate Requirement Levels" [https://tools.ietf.org/html/rfc2119[RFC2119]].
+
+Other documents referenced by this specification are identified by name on first use, and thereafter by a short abbreviation. The "<<bibliography.asciidoc#bibliography,Bibliography>>" section at the end of this document provides full references.
+
+=== Acknowledgments
+
+The author would like to thank the JSR-375 Expert Group and Contributors, and, in particular, Arjan Tijms, whose contributions were critical to the success of the JSR.
 
 ==== Specification Lead
 
-* Will Hopkins (Oracle)
+Will Hopkins (Oracle)
 
-==== Expert Group Members
+==== Expert Group
 
-* Adam Bien
-* David Blevins (Tomitribe)
-* Rudy De Busscher
-* Ivar Grimstad
-* Les Hazlewood (Stormpath, Inc.)
-* Will Hopkins (Oracle)
-* Werner Keil
-* Matt Konda (Jemurai)
-* Alexander Kosowski (Oracle)
-* Darran Lofthouse (Red Hat)
-* Jean-Louis Monteiro (Tomitribe)
-* Ajay Reddy (IBM)
-* Pedro Igor Silva (Red Hat)
-* Arjan Tijms
+[cols="2*", options="noheader"]
+|===
+| Adam Bien
+| David Blevins (Tomitribe)
+
+| Rudy De Busscher
+| Ivar Grimstad
+
+| Les Hazlewood (Stormpath, Inc.)
+| Will Hopkins (Oracle)
+
+| Werner Keil
+| Matt Konda (Jemurai)
+
+| Alexander Kosowski (Oracle)
+| Darran Lofthouse (Red Hat)
+
+| Jean-Louis Monteiro (Tomitribe)
+| Ajay Reddy (IBM)
+
+| Pedro Igor Silva (Red Hat)
+| Arjan Tijms
+|===
 
 ==== Contributors
 
-* Guillermo González de Agüero
-* John Hogan
-* Elder Moraes
-* Fatih Mutluay
-* Reza Rahman
-* Ashley Richardson
+[cols="2*", options="noheader"]
+|===
+| Guillermo González de Agüero
+| John Hogan
+
+| Elder Moraes
+| Fatih Mutluay
+
+| Reza Rahman
+| Ashley Richardson
+|===
 
 :numbered:
