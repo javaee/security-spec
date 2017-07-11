@@ -4,7 +4,7 @@
 
     <groupId>javax.security</groupId>
     <artifactId>javax.security-spec</artifactId>
-    <version>1.0-m05-SNAPSHOT</version>
+    <version>1.0-b07</version>
     <packaging>pom</packaging>
 
     <name>EE Security API Specification</name>
