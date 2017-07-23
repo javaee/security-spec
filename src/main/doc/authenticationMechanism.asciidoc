@@ -304,7 +304,9 @@ See also the "<<LoginToContinue Annotation>>" and "<<Custom FORM Notes>>" sectio
 
 ==== LoginToContinue Annotation
 
-The _LoginToContinue_ annotation is used to configure the login page, error page, and redirect/forward behavior for a form-based authentication mechanism
+The _LoginToContinue_ annotation provides an application the ability to declaratively add "login to continue" functionality to an authentication mechanism. "login to continue" conceptually refers to the algorithm (flow) as descrived by the numbered steps in Servlet spec 13.6.3.
+
+The annotation is also used to configure the login page, error page, and redirect/forward behavior for a form-based authentication mechanism (implicitely suggesting, but not requiring, that such form-based authentication mechanism uses the backing interceptor for this annotation, which is described below).
 
 [source,java]
 ----
@@ -328,9 +330,64 @@ public @interface LoginToContinue {
 }
 ----
 
+The container MUST provide an interceptor implementation at priority _PLATFORM_BEFORE + 220_ that backs the _LoginToContinue_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
+
+Intercepting _validateRequest()_::
+* Determine if there's any state lingering behind from a previously aborted flow involving "login to continue".
+* If there is:
+** Determine if the caller aborted the earlier flow, and now does a new request to a protected resource or initiated a new authentication dialog explicitly (i.e. by calling _SecurityContext#authenticate_ with _AuthenticationParameters#newAuthentication_ set to _true_).
+** If so:
+*** Clean (remove) all state related to "login to continue" and create new state that initially records whether the caller did a request to a protected resource or initiated a new authentication dialog for the current request.
+* Use the state to determine whether the caller did a request to a protected resource or initiated a new authentication dialog (note: not necessarily in the current request).
+* If the caller initiated a new authentication dialog, then:
+** Continue with flow "processCallerInitiatedAuthentication".
+* Otherwise
+** Continue with flow "processContainerInitiatedAuthentication".
+
+Flow "processCallerInitiatedAuthentication"::
+* Call the next Interceptor. For the sake of discussion call its outcome _outcome_.
+* If _outcome_ equals _SUCCESS_ and _HttpMessageContext#getCallerPrincipal()_ is not null, remove all state.
+* Return _outcome_.
+
+Flow "processContainerInitiatedAuthentication"::
+* Determine how far the caller is in the "login to continue" flow by comparing the request and state against the following numbered and named steps:
+1. "OnInitialProtectedURL" - Protected resource requested and no request saved before
+1. "OnLoginPostback" - A postback after we have redirected the caller in step 1 (note: this does not have to be the resource we redirected the caller to. E.g. we can redirect to _/login_, and _/login_ can postback to e.g. _J_SECURITY_CHECK_ or _/login2_)
+1. "OnOriginalURLAfterAuthenticate" - Authenticated data saved and back on the original (protected) URL from step 1.
+* If the step as described above could be determined, continue with the flow having the same name as that step, otherwise return the result of calling the next Interceptor.
+
+Flow "OnInitialProtectedURL"::
+* Save all request details (URI, headers, body etc) to the state.
+* Redirect/forward to _LoginToContinue#loginPage()_ depending on _useForwardToLogin()_ attribute.
+
+Flow "OnLoginPostback"::
+* Call the next Interceptor. For the sake of discussion call its outcome _outcome_.
+* If _outcome_ equals _SUCCESS_ 
+** If _HttpMessageContext#getCallerPrincipal()_ is _null_ return _SUCCESS_
+** Retrieve the saved request details
+** If the current request matches the saved request details (same URI, headers, etc) return _SUCCESS_
+** Otherwise, save the details representing the authentication (at least _HttpMessageContext#getCallerPrincipal()_ and                         _HttpMessageContext#getGroups()_) to the state and redirect to the full request URL as stored in the saved request details.
+* If _outcome_ equals _SEND_FAILURE_ and _LoginToContinue#errorPage_ is not empty (_null_ or empty string), redirect to _LoginToContinue#errorPage_.
+* Otherwise return _outcome_.
+
+Flow "OnOriginalURLAfterAuthenticate"::
+* Retrieve the saved request and authentication details.
+* Clean (remove) all state related to "login to continue".
+* Set a wrapped request into _HttpMessageContext_ that provides to the application all the original request details (headers, body, method, etc) from the saved request details.
+* Call the HttpMessageContext#notifyContainerAboutLogin() method with as arguments the _CallerPrincipal_ and groups from the saved authentication details.
+* Return _SUCCESS_.
+
+Intercepting _secureResponse()_::
+* The _secureResponse()_ method SHOULD NOT be intercepted.
+
+Intercepting _cleanSubject()_::
+* The _cleanSubject()_ method SHOULD NOT be intercepted.
+
+See also the <<SecurityContext.authenticate Notes>> section below.
+
 ==== RememberMe Annotation
 
-The _RememberMe_ annotation is used to configure a _RememberMeIdentityStore_, which must be provided by the application. To use _RememberMe_, the application must provide an _HttpAuthenticationMechanism_ (or configure one of the built-in mechanisms), and annotate the _HttpAuthenticationMechanism_ (or built-in annotation) with the _RememberMe_ annotation.
+The _RememberMe_ annotation is used to configure a _RememberMeIdentityStore_, which must be provided by the application. To use _RememberMe_, the application must provide an _HttpAuthenticationMechanism_ and annotate the _HttpAuthenticationMechanism_ with the _RememberMe_ annotation.
 
 [source,java]
 ----
@@ -366,7 +423,7 @@ public @interface RememberMe {
 }
 ----
 
-The container MUST provide an interceptor implementation that backs the _RememberMe_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
+The container MUST provide an interceptor implementation at priority _PLATFORM_BEFORE + 210_ that backs the _RememberMe_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
 
 Intercepting _validateRequest()_::
 * Determine whether there is a RememberMe cookie in the request
@@ -473,6 +530,16 @@ public class LoginBacking {
         
     }
 ----
+
+=== SecurityContext.authenticate Notes ===
+
+Both a _LoginToContinue_ annotated _HttpAuthenticationMechanism_ and the two build-in FORM authentication mechanisms can be triggered via a call to the _SecurityContext#authenticate()_ method. This is based on the behavior of the _HttpServletRequest#authenticate_ method as defined by the Servlet specification and specifically the Servlet Container Profile of the JASPIC spec.
+
+This specification adds aditional behavior to the _authenticate()_ concept by allowing the call site of that method to provide _AuthenticationParameters_. This includes a _newAuthentication_ parameter, which is described below.
+
+When _newAuthentication_ is set to _true_, the container MUST discard all state it holds for an authentication mechanism that's associated with the current caller. Specifically this means that if the _LoginToContinue_ annotated _HttpAuthenticationMechanism_ or any of the build-in FORM authentication mechanisms has any state such as described for the <<LoginToContinue Annotation>> above, this state MUST be discarded.
+
+When _newAuthentication_ is set to _false_, the container MUST NOT discard any state it holds for an authentication mechanism that's associated with the current caller. Specifically this means that for the _LoginToContinue_ annotated _HttpAuthenticationMechanism_ or any of the build-in FORM authentication mechanisms the container must "resume" the authentication dialog. "Resume" here means determining how far the caller is in the "login to continue" flow based on any previously saved state (or lack therefor) and continue processing from that point as it would normally do.
 
 === Relationship to other specifications
 
