@@ -437,7 +437,7 @@ Intercepting _validateRequest()_::
 ** Set the new cookie with parameters as configured on the _RememberMe_ annotation.
 
 Intercepting _secureResponse()_::
-* The _secureResponse() method SHOULD NOT be intercepted.
+* The _secureResponse()_ method SHOULD NOT be intercepted.
 
 Intercepting _cleanSubject()_::
 * If there is a RememberMe cookie in the request, then:
@@ -445,6 +445,47 @@ Intercepting _cleanSubject()_::
 ** Call the _removeLoginToken()_ method of the _RememberMeIdentityStore_.
 
 See also the description of _RememberMeIdentityStore_ in Chapter 3, "<<identityStore.asciidoc#identity-store,Identity Store>>".
+
+==== AutoApplySession Annotation
+
+The _AutoApplySession_ annotation provides an application the ability to declaratively add "javax.servlet.http.registerSession" functionality to an authentication mechanism and auto applies this for every request.
+
+"javax.servlet.http.registerSession" refers to the requirements as descrived in the JASPIC 1.1 specification section 3.8.4.
+
+This annotation defines the concept of a caller being authenticated over a series of multiple HTTP requests (together a "session"). The form-based authentication mechanisms use this same concept. Therefor it is implicitely suggested, but not required, that such form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their "session".
+
+[source,java]
+----
+@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface AutoApplySession {
+}
+----
+
+The container MUST provide an interceptor implementation at priority _PLATFORM_BEFORE + 200_ that backs the _AutoApplySession_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
+
+Intercepting _validateRequest()_::
+* Obtain the _Principal_ from the _HttpServletRequest_ that is obtained from the _HttpMessageContext_ passed in as argument to the _validateRequest()_ method. For sake of discussion call this principal _principal_ and the _HttpMessageContext_ _httpMessageContext_.
+* If _principal_ is null:
+** Call the next Interceptor. For the sake of discussion call its outcome _outcome_.
+** If _outcome_ equals _SUCCESS_:
+*** Obtain the _map_ object of the _messageInfo_ from _httpMessageContext_. For sake of discussion call this _map_.
+*** Add an entry to _map_ with key "javax.servlet.http.registerSession" and value "true".
+** Return _outcome_.
+* Otherwise
+** Create a new _CallerPrincipalCallback_ instance with as constructor arguments the client subject obtained from _httpMessageContext_, and _principal_. For the sake of discussion call this instance _callerPrincipalCallback_.
+** Obtain the _CallbackHandler_ from _httpMessageContext_ and let it handle _callerPrincipalCallback_.
+** Return _SUCCESS_.
+
+Intercepting _secureResponse()_::
+* The _secureResponse()_ method SHOULD NOT be intercepted.
+
+Intercepting _cleanSubject()_::
+* The _cleanSubject()_ method SHOULD NOT be intercepted.
+
+See also the <<AutoApplySession Notes>> section below.
 
 ==== Implementation Notes ====
 
@@ -531,7 +572,7 @@ public class LoginBacking {
     }
 ----
 
-=== SecurityContext.authenticate Notes ===
+==== SecurityContext.authenticate Notes ====
 
 Both a _LoginToContinue_ annotated _HttpAuthenticationMechanism_ and the two build-in FORM authentication mechanisms can be triggered via a call to the _SecurityContext#authenticate()_ method. This is based on the behavior of the _HttpServletRequest#authenticate_ method as defined by the Servlet specification and specifically the Servlet Container Profile of the JASPIC spec.
 
@@ -540,6 +581,25 @@ This specification adds aditional behavior to the _authenticate()_ concept by al
 When _newAuthentication_ is set to _true_, the container MUST discard all state it holds for an authentication mechanism that's associated with the current caller. Specifically this means that if the _LoginToContinue_ annotated _HttpAuthenticationMechanism_ or any of the build-in FORM authentication mechanisms has any state such as described for the <<LoginToContinue Annotation>> above, this state MUST be discarded.
 
 When _newAuthentication_ is set to _false_, the container MUST NOT discard any state it holds for an authentication mechanism that's associated with the current caller. Specifically this means that for the _LoginToContinue_ annotated _HttpAuthenticationMechanism_ or any of the build-in FORM authentication mechanisms the container must "resume" the authentication dialog. "Resume" here means determining how far the caller is in the "login to continue" flow based on any previously saved state (or lack therefor) and continue processing from that point as it would normally do.
+
+==== AutoApplySession Notes ====
+
+As an example, idiomatic code for setting the "javax.servlet.http.registerSession" key as per the requirements is:
+
+[source,java]
+----
+httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.registerSession", TRUE.toString());
+----
+
+As another example, idiomatic code for setting the _CallerPrincipalCallback_ as per the requirements is:
+
+[source,java]
+----
+httpMessageContext.getHandler().handle(new Callback[] { 
+    new CallerPrincipalCallback(httpMessageContext.getClientSubject(), principal) }
+);
+----
+
 
 === Relationship to other specifications
 
