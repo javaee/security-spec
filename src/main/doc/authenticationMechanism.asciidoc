@@ -490,7 +490,7 @@ Section 14.4, item 18, of [https://jcp.org/aboutJava/communityprocess/final/jsr3
 
 An implementation of BASIC or FORM is NOT REQUIRED to support _IdentityStore_ when configured via _login-config_, regardless of whether the container has provided a single mechanism or separate mechanisms to satisfy the _login-config_ and _HttpAuthenticationMechanism_ requirements. Implementations MAY support _IdentityStore_ for all configuration methods.
 
-If an application provides an _HttpAuthenticationMechanism_ and also configures a _login-config_ element in web.xml, the container SHOULD fail deployment, but MAY choose to proceed, using only the _HttpAuthenticationMechanism_ (i.e., ignoring the _login-config_ from web.xml).
+If an application provides an _HttpAuthenticationMechanism_, and also configures a _login-config_ element in web.xml, the container MAY fail deployment, but is NOT REQUIRED to. If the container does not fail deployment, it MUST use only the _HttpAuthenticationMechanism_ to authenticate the application's callers (i.e., it MUST ignore the _login-config_ from web.xml).
 
 ==== Custom FORM Notes ====
 
