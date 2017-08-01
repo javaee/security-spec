@@ -159,7 +159,7 @@ JSR-115, "Java Authorization Contract for Containers", version 1.5, Maintenance 
 https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html
 
 [JASPIC]::
-JSR-196, "Java Authentication SPI for Containers", version 1.0, Maintenance Release 2 +
+JSR-196, "Java Authentication SPI for Containers", version 1.1, Maintenance Release B +
 https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html
 
 [RFC2119]::

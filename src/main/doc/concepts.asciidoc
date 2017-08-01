@@ -165,7 +165,7 @@ JACC::
 JSR-115, "Java Authorization Contract for Containers", version 1.5 [https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html[JACC]].
 
 JASPIC::
-JSR-196, "Java Authentication SPI for Containers", version 1.0 [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
+JSR-196, "Java Authentication SPI for Containers", version 1.1 [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
 SAM::
 Abbreviation for _ServerAuthModule_, an interface defined by JASPIC.
