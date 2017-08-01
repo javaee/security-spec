@@ -450,7 +450,7 @@ The _AutoApplySession_ annotation provides the ability to declaratively add _jav
 
 The _javax.servlet.http.registerSession_ behavior is described in Section 3.8.4 of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
-This annotation embodies the concept of a caller being authenticated across a series of HTTP requests (together, a "session"). The built-in form-based authentication mechanisms use this same concept. It is therefore implicitly suggested, but not required, that the form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their sessions.
+This annotation embodies the concept of a caller being authenticated over a series of multiple HTTP requests (together, a "session"). The built-in form-based authentication mechanisms use this same concept. It is therefore implicitly suggested, but not required, that the form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their sessions.
 
 [source,java]
 ----
