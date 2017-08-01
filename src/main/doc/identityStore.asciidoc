@@ -401,6 +401,8 @@ The corresponding annotations are defined as shown in the following sections.
 
 ==== LDAP Annotation
 
+The _LdapIdentityStoreDefinition_ annotation configures an instance of the built-in LDAP identity store. See javadoc for details of the configuration attributes.
+
 [source,java]
 ----
 @Retention(RUNTIME)
@@ -462,6 +464,8 @@ public @interface LdapIdentityStoreDefinition {
 
 ==== Database Annotation
 
+The _DatabaseIdentityStoreDefinition_ annotation configures an instance of the built-in database identity store.
+
 [source,java]
 ----
 @Retention(RUNTIME)
@@ -474,7 +478,9 @@ public @interface DataBaseIdentityStoreDefinition {
 
     String groupsQuery() default "";
 
-    String hashAlgorithm() default "PBKDF2";
+    Class<? extends PasswordHash> hashAlgorithm() default Pbkdf2PasswordHash.class;
+
+    String[] hashAlgorithmParameters() default {};
 
     int priority() default 70;
 
@@ -485,6 +491,14 @@ public @interface DataBaseIdentityStoreDefinition {
     String useForExpression() default "";
 }
 ----
+
+Password hashing/hash verification is provided by an implementation of the _PasswordHash_ interface, which must be made available as a dependent-scoped bean, and is configured by type on the _hashAlgorithm()_ attribute. The specified type may refer to the actual implementation class, or to any type it implements or extends, as long as the specified type implements the _PasswordHash_ interface.
+
+Parameters for the configured _PasswordHash_ can be provided using the _hashAlgorithmParameters_ attribute, and will be passed to the _initialize()_ method of the _PasswordHash_ when the identity store is initialized.
+
+The default hash algorithm, _Pbkdf2PasswordHash_, is an interface denoting a standard, built-in _PasswordHash_. All implementations of this specification MUST provide an implementation of the _Pbkdf2PasswordHash_ interface, with configuration and behavior as described by the interface's javadoc.
+
+See javadoc for further details on _PasswordHash_ and the _DatabaseIdentityStoreDefinition_ annotation.
 
 === Relationship to Other Specifications
 
