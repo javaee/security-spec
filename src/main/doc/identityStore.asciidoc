@@ -278,11 +278,23 @@ Set<String> getCallerGroups(CredentialValidationResult validationResult);
 
 The _getCallerGroups()_ method supports aggregation of identity stores, where one identity store is used to authenticate users, but one or more other stores are used to retrieve additional groups. In such a scenario, it is necessary to query identity stores without validating the caller's credential against the stores.
 
-Note that _getCallerGroups()_ is not intended as a general purpose API for retrieving user groups. It should be called only by an _IdentityStoreHandler_, in the course of orchestrating a _validate()_ call across multiple identity stores. __IdentityStore__s should check whether the caller is privileged (i.e., executing on behalf of the system, or with a specific permission) and throw an exception if not.
-
 If an _IdentityStore_ supports both _validate()_ and _getCallerGroups()_, the behavior of both methods should be consistent with respect to groups. That is, for a given user "foo", the set of groups returned when calling _validate()_ to authenticate user "foo" should be the same as the set of groups returned when calling _getCallerGroups()_ for _CallerPrincipal_ "foo". (Assuming no errors occur during either call -- this requirement is intended as a normative description of expected behavior; it does not imply that an implementation must "make it right" if errors or other uncontrollable factors cause results to vary between any two calls.)
 
 As a result, it is never necessary to call _getCallerGroups()_ when there is only one _IdentityStore_, because the same groups are returned by the _validate()_ method.
+
+Note that _getCallerGroups()_ is not intended as a general purpose API for retrieving user groups. It should be called only by an _IdentityStoreHandler_, in the course of orchestrating a _validate()_ call across multiple identity stores.
+
+Because _getCallerGroups()_ enables its callers to access an external store as a privileged user (i.e., as an LDAP or database user with permission to search the store and retrieve information about arbitrary user accounts), it should be protected against unauthorized access.
+
+Implementors of _getCallerGroups()_ are strongly encouraged to check that the calling context has _IdentityStorePermission_, as shown below, before proceeding. (The built-in identity stores are REQUIRED to do so, see <<Annotations and Built-In IdentityStore Beans>>.)
+
+[source,java]
+----
+SecurityManager securityManager = System.getSecurityManager();
+if (securityManager != null) {
+    securityManager.checkPermission(new IdentityStorePermission("getGroups"));
+}
+----
 
 ==== Declaring Capabilities
 
@@ -344,6 +356,12 @@ The _validate()_ method of the default implementation MUST do the following:
 ** Call the _getCallerGroups()_ method on all available _IdentityStore_ beans that declared _only_ the _PROVIDE_GROUPS_ validation type, in the order induced by the return value of the _getPriority()_ method of each _IdentityStore_, passing in the _CredentialValidationResult_ obtained during the previous phase. Add the groups returned by each call to the set of accumulated groups.
 * Return a new _CredentialValidationResult_ with status _VALID_; the _CallerPrincipal_, _CallerUniqueId_, _CallerDn_, and _IdentityStoreId_ that were returned from the successful _validate()_; and the accumulated collection of groups.
 
+The default _IdentityStoreHandler_ MUST make all calls to _getCallerGroups()_ in the context of a _PrivilegedAction_. Other implementations of _IdentityStoreHandler_ are strongly encouraged to do so as well.
+
+The necessary permission grants (i.e., for _IdentityStorePermission("getGroups")_) should be configured if running with a _SecurityManager_.
+
+See javadoc for additional information.
+
 ==== State
 
 An _IdentityStore_ is logically stateless. An _IdentityStoreHandler_ should not make any assumptions about the state of an _IdentityStore_ before, during, or after making calls to it. In particular, an _IdentityStore_ store should not be aware of the point its caller has reached in the authentication process, and, even more specifically, an _IdentityStore_ should not keep track of whether a caller is authenticated or not at any given moment in time.
@@ -396,6 +414,8 @@ A Java EE container MUST support built-in beans for the following _IdentityStore
 Each of these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.
 
 The built-in identity stores MUST support validating _UsernamePasswordCredential_. They MAY support other credential types, but are NOT REQUIRED to.
+
+The built-in identity stores MUST check whether a _SecurityManager_ is configured, and, if so, check whether the calling context has _IdentityStorePermission_, as described in <<Retrieving Caller Information>> above, before proceeding.
 
 Note that implementations are explicitly NOT REQUIRED to provide an LDAP server or database. The requirement is only to provide _IdentityStore_ implementations that can work with an external LDAP or database server that may be present in the operating environment.
 
