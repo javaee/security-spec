@@ -342,7 +342,7 @@ The _validate()_ method of the default implementation MUST do the following:
 ** Create an empty set of groups.
 ** Add any groups returned in the CredentialValidationResult to the set of groups, if and only if the identity store that returned the _VALID_ result declared the _PROVIDE_GROUPS_ validation type. 
 ** Call the _getCallerGroups()_ method on all available _IdentityStore_ beans that declared _only_ the _PROVIDE_GROUPS_ validation type, in the order induced by the return value of the _getPriority()_ method of each _IdentityStore_, passing in the _CredentialValidationResult_ obtained during the previous phase. Add the groups returned by each call to the set of accumulated groups.
-* Return a new _CredentialValidationResult_ with status _VALID_, the _CallerPrincipal_ that was returned from _validate()_, and the accumulated collection of groups. Do not include an identity store ID or a caller unique ID in the new _CredentialValidationResult_.
+* Return a new _CredentialValidationResult_ with status _VALID_; the _CallerPrincipal_, _CallerUniqueId_, _CallerDn_, and _IdentityStoreId_ that were returned from the successful _validate()_; and the accumulated collection of groups.
 
 ==== State
 
