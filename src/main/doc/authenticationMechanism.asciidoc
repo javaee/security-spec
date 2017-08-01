@@ -306,7 +306,7 @@ See also the "<<LoginToContinue Annotation>>" and "<<Custom FORM Notes>>" sectio
 
 The _LoginToContinue_ annotation provides an application with the ability to declaratively add "login to continue" functionality to an authentication mechanism. "Login to continue" conceptually refers to the algorithm (flow) described by the numbered steps in [https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html[SERVLET31]], Section 13.6.3, "Form Based Authentication".
 
-The annotation is also used to configure the login page, error page, and redirect/forward behavior for a form-based authentication mechanism (implicitely suggesting, but not requiring, that such form-based authentication mechanism uses the backing interceptor for this annotation, which is described below).
+The annotation is also used to configure the login page, error page, and redirect/forward behavior for the built-in form-based authentication mechanisms (implicitly suggesting, but not requiring, that those authentication mechanisms use the backing interceptor for this annotation, which is described below).
 
 [source,java]
 ----
@@ -335,8 +335,9 @@ The container MUST provide an interceptor implementation, at priority _PLATFORM_
 Intercepting _validateRequest()_::
 * Determine if there is any stale state in the request context, due to a previously aborted flow involving "login to continue". If so, clear the stale state.
 * Determine if this request is a new caller-initiated authentication, by calling _isNewAuthentication()_ on the _AuthenticationParameters_ object available from _HttpMessageContext_.
-** If _isNewAuthentication()_ returns true, update the request state to record that it is a caller-initiated authentication, and continue with flow _processCallerInitiatedAuthentication_.
-** If _isNewAuthentication()_ returns false, continue with flow _processContainerInitiatedAuthentication_.
+** If _isNewAuthentication()_ returns true, update the request state to record that this is a caller-initiated authentication.
+* If the request is a caller-initiated authentication, continue with flow _processCallerInitiatedAuthentication_.
+* Otherwise, if the request is not a caller-initiated authentication, continue with flow _processContainerInitiatedAuthentication_.
 
 Flow processCallerInitiatedAuthentication::
 * Call the next _Interceptor_, and remember the resulting _AuthenticationStatus_.
@@ -449,7 +450,7 @@ The _AutoApplySession_ annotation provides the ability to declaratively add _jav
 
 The _javax.servlet.http.registerSession_ behavior is described in Section 3.8.4 of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
-This annotation defines the concept of a caller being authenticated over a series of multiple HTTP requests (together, a "session"). The form-based authentication mechanisms use this same concept. Therefor it is implicitely suggested, but not required, that such form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their session.
+This annotation embodies the concept of a caller being authenticated across a series of HTTP requests (together, a "session"). The built-in form-based authentication mechanisms use this same concept. It is therefore implicitly suggested, but not required, that the form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their sessions.
 
 [source,java]
 ----
@@ -570,13 +571,13 @@ public class LoginBacking {
 
 ==== SecurityContext.authenticate() Notes ====
 
-Any _LoginToContinue_-annotated _HttpAuthenticationMechanism_, including the two built-in FORM authentication mechanisms, can be triggered via a call to the _SecurityContext.authenticate()_ method. This method is based on the _HttpServletRequest.authenticate()_ method, as defined by [https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html[SERVLET31]], but has been extended to support additional functionality defined by the Servlet Container Profile of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
+Any _LoginToContinue_-annotated _HttpAuthenticationMechanism_, as well as the two built-in FORM authentication mechanisms, can be triggered via a call to the _SecurityContext.authenticate()_ method. This method is based on the _HttpServletRequest.authenticate()_ method, as defined by [https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html[SERVLET31]], but has been extended to support additional functionality defined by the Servlet Container Profile of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
-The extended behavior is facilitated by the _AuthenticationParameters_ parameter passed to _SecurityContext.authenticate()_. _AuthenticationParameters_ includes a _ewAuthentication_ field.
+The extended behavior is facilitated by the _AuthenticationParameters_ parameter passed to _SecurityContext.authenticate()_. _AuthenticationParameters_ includes a _newAuthentication_ field.
 
-When _newAuthentication_ is set to _true_, the container MUST discard any state that it holds for a _LoginToContinue_-annotated _HttpAuthenticationMechanism_ and that is associated with the current caller. Specifically, this means that any associated state, such as described for the <<LoginToContinue Annotation>> above, MUST be cleared, and the request must proceed as if processing a new request.
+When _newAuthentication_ is set to _true_, the container MUST discard any state that it holds for an _HttpAuthenticationMechanism_ and that is associated with the current caller. Specifically, this means that any associated state, such as described for the <<LoginToContinue Annotation>> above, MUST be cleared, and the request must proceed as if processing a new request.
 
-When _newAuthentication_ is set to _false_, the container MUST NOT discard any state that it holds for a _LoginToContinue_-annotated _HttpAuthenticationMechanism_ and that is associated with the current caller. Instead, the container MUST resume the in-progress authentication dialog, based on the  associated state. Specifically, the container MUST:
+When _newAuthentication_ is set to _false_, the container MUST NOT discard any state that it holds for an _HttpAuthenticationMechanism_ and that is associated with the current caller. Instead, the container MUST resume the in-progress authentication dialog, based on the  associated state. Specifically, the container MUST:
 
 * Determine how far the caller is in the "login to continue" flow, based on the previously saved state (or lack thereof), and;
 * Continue processing from that point as it would normally do.
