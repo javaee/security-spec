@@ -335,7 +335,7 @@ The container MUST provide an interceptor implementation, at priority _PLATFORM_
 Intercepting _validateRequest()_::
 * Determine if there is any stale state in the request context, due to a previously aborted flow involving "login to continue". If so, clear the stale state.
 * Determine if this request is a new caller-initiated authentication, by calling _isNewAuthentication()_ on the _AuthenticationParameters_ object available from _HttpMessageContext_.
-** If _isNewAuthentication()_ returns true, update the request state to record that this is a caller-initiated authentication.
+** If _isNewAuthentication()_ returns true, update the request state to indicate that this is a caller-initiated authentication.
 * If the request is a caller-initiated authentication, continue with flow _processCallerInitiatedAuthentication_.
 * Otherwise, if the request is not a caller-initiated authentication, continue with flow _processContainerInitiatedAuthentication_.
 
@@ -473,7 +473,7 @@ Intercepting _validateRequest()_::
 ** Return the _AuthenticationStatus_.
 * If the _Principal_ is not null:
 ** Create a new _CallerPrincipalCallback_ instance, passing the _Principal_ and client subject obtained from _HttpMessageContext_ to the constructor.
-** Obtain the _CallbackHandler_ from _HttpMessageContext_, and let it handle the _CallerPrincipalCallback_.
+** Obtain the _CallbackHandler_ from _HttpMessageContext_, and have it handle the _CallerPrincipalCallback_.
 ** Return _AuthenticationStatus.SUCCESS_.
 
 Intercepting _secureResponse()_::
@@ -575,9 +575,9 @@ Any _LoginToContinue_-annotated _HttpAuthenticationMechanism_, as well as the tw
 
 The extended behavior is facilitated by the _AuthenticationParameters_ parameter passed to _SecurityContext.authenticate()_. _AuthenticationParameters_ includes a _newAuthentication_ field.
 
-When _newAuthentication_ is set to _true_, the container MUST discard any state that it holds for an _HttpAuthenticationMechanism_ and that is associated with the current caller. Specifically, this means that any associated state, such as described for the <<LoginToContinue Annotation>> above, MUST be cleared, and the request must proceed as if processing a new request.
+When _newAuthentication_ is set to _true_, the container MUST discard any state that it holds for an _HttpAuthenticationMechanism_, and that is associated with the current caller. Specifically, this means that any associated state, such as described for the <<LoginToContinue Annotation>> above, MUST be cleared, and the request must proceed as if processing a new request.
 
-When _newAuthentication_ is set to _false_, the container MUST NOT discard any state that it holds for an _HttpAuthenticationMechanism_ and that is associated with the current caller. Instead, the container MUST resume the in-progress authentication dialog, based on the  associated state. Specifically, the container MUST:
+When _newAuthentication_ is set to _false_, the container MUST NOT discard any state that it holds for an _HttpAuthenticationMechanism_, and that is associated with the current caller. Instead, the container MUST resume the in-progress authentication dialog, based on the  associated state. Specifically, the container MUST:
 
 * Determine how far the caller is in the "login to continue" flow, based on the previously saved state (or lack thereof), and;
 * Continue processing from that point as it would normally do.
