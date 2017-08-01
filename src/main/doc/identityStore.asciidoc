@@ -395,6 +395,8 @@ A Java EE container MUST support built-in beans for the following _IdentityStore
 
 Each of these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.
 
+The built-in identity stores MUST support validating _UsernamePasswordCredential_. They MAY support other credential types, but are NOT REQUIRED to.
+
 Note that implementations are explicitly NOT REQUIRED to provide an LDAP server or database. The requirement is only to provide _IdentityStore_ implementations that can work with an external LDAP or database server that may be present in the operating environment.
 
 The corresponding annotations are defined as shown in the following sections.
