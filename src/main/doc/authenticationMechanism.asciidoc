@@ -352,8 +352,8 @@ Flow processContainerInitiatedAuthentication::
 * If the step, as described above, can be determined, continue with the flow having the same name as that step, otherwise return the result of calling the next _Interceptor_.
 
 Flow OnInitialProtectedURL::
-* Save all request details (URI, headers, body etc) to the state.
-* Redirect or forward to the _LoginToContinue.loginPage()_ depending on the value of the _useForwardToLogin()_ attribute.
+* Save all request details (URI, headers, body, etc.) to the state.
+* Redirect or forward to _LoginToContinue.loginPage()_, depending on the value of the _useForwardToLogin()_ attribute.
 
 Flow OnLoginPostback::
 * Call the next _Interceptor_, and remember the resulting _AuthenticationStatus_.
@@ -362,14 +362,14 @@ Flow OnLoginPostback::
 ** If the current request matches the saved request state (same URI, headers, etc.), return _AuthenticationStatus.SUCCESS_
 ** If the current request does not match the saved request state, save the authentication state (minimally, the caller principal and groups from the _HttpMessageContext_) and redirect to the full request URL as stored in the saved request state.
 * If the result was _AuthenticationStatus.SEND_FAILURE_:
-** If the _LoginToContinue.errorPage()_ is non-null and non-empty, redirect to _LoginToContinue.errorPage()_.
+** If _LoginToContinue.errorPage()_ is non-null and non-empty, redirect to _LoginToContinue.errorPage()_.
 * Return the _AuthenticationStatus_.
 
 Flow OnOriginalURLAfterAuthenticate::
 * Retrieve the saved request and authentication details.
 * Clear all state related to "login to continue".
 * Set a wrapped request into _HttpMessageContext_ that provides all the original request details (headers, body, method, etc.) from the saved request state.
-* Call the _HttpMessageContext.notifyContainerAboutLogin()_ method with the _CallerPrincipal_ and groups from the saved authentication state.
+* Call the _HttpMessageContext.notifyContainerAboutLogin()_ method with the caller principal and groups from the saved authentication state.
 * Return _AuthenticationStatus.SUCCESS_.
 
 Intercepting _secureResponse()_::
@@ -446,9 +446,9 @@ See also the description of _RememberMeIdentityStore_ in Chapter 3, "<<identityS
 
 ==== AutoApplySession Annotation
 
-The _AutoApplySession_ annotation provides the ability to declaratively add _javax.servlet.http.registerSession_ behavior to an authentication mechanism and auto-apply it for every request.
+The _AutoApplySession_ annotation provides a way to declaratively enable JASPIC _javax.servlet.http.registerSession_ behavior for an authentication mechanism, and automatically apply it for every request.
 
-The _javax.servlet.http.registerSession_ behavior is described in Section 3.8.4 of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
+The _javax.servlet.http.registerSession_ property is described in Section 3.8.4 of [https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html[JASPIC]].
 
 This annotation embodies the concept of a caller being authenticated over a series of multiple HTTP requests (together, a "session"). The built-in form-based authentication mechanisms use this same concept. It is therefore implicitly suggested, but not required, that the form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their sessions.
 
@@ -490,7 +490,7 @@ Section 14.4, item 18, of [https://jcp.org/aboutJava/communityprocess/final/jsr3
 
 An implementation of BASIC or FORM is NOT REQUIRED to support _IdentityStore_ when configured via _login-config_, regardless of whether the container has provided a single mechanism or separate mechanisms to satisfy the _login-config_ and _HttpAuthenticationMechanism_ requirements. Implementations MAY support _IdentityStore_ for all configuration methods.
 
-If an application provides an _HttpAuthenticationMechanism_ and also configures a _login-config_ element in web.xml, the container SHOULD fail deployment, but MAY choose to proceed, using only the _HttpAuthenticationMechanism_ (i.e., ignoring the _login-config_ from web.xml).
+If an application provides an _HttpAuthenticationMechanism_, and also configures a _login-config_ element in web.xml, the container MAY fail deployment, but is NOT REQUIRED to. If the container does not fail deployment, it MUST use only the _HttpAuthenticationMechanism_ to authenticate the application's callers (i.e., it MUST ignore the _login-config_ from web.xml).
 
 ==== Custom FORM Notes ====
 
