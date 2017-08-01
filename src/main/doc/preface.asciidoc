@@ -144,7 +144,7 @@
 
 == Preface
 
-This document is the Proposed Final Draft (PFD) of the specification for JSR-375, "Java EE Security API", version 1.0 [https://jcp.org/en/jsr/detail?id=375[SECAPI]].
+This document is the Java EE Security API Specification, version 1.0.
 
 === Notational Conventions
 
