@@ -23,9 +23,10 @@ Please refer to the following resources for more information:
 
 JSR-375 follows the Java Community Process:
 
-* The [JSR-375 Page](https://jcp.org/en/jsr/detail?id=375) at
+* [JSR-375 Page](https://jcp.org/en/jsr/detail?id=375) at
 the [Java Community Process (jcp.org)](https://jcp.org/en/home/index).
-* The [JSR-375 Discussion Group](https://javaee.groups.io/g/javaee-security-spec) at [groups.io](https:groups.io).
+* [JSR-375 Discussion Group](https://javaee.groups.io/g/javaee-security-spec) at
+[groups.io](https://groups.io).
 
 ## Documentation
 
