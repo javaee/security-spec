@@ -19,13 +19,22 @@ The reference implementation (RI) is called Soteria.
 
 Please refer to the following resources for more information:
 
-* The [JSR-375 page @ jcp.org](https://jcp.org/en/jsr/detail?id=375)
-* The [JSR-375 discussion group @ groups.io](https://javaee.groups.io/g/javaee-security-spec)
+## JCP Process and Expert Group
+
+JSR-375 follows the Java Community Process:
+
+* The [JSR-375 Page](https://jcp.org/en/jsr/detail?id=375) at
+the [Java Community Process (jcp.org)](https://jcp.org/en/home/index).
+* The [JSR-375 Discussion Group](https://javaee.groups.io/g/javaee-security-spec) at [groups.io](https:groups.io).
+
+## Documentation
 
 The latest specification and javadoc can be found at:
 
 * Specification: [pdf](spec/jsr375-spec.pdf) \| [html](spec/jsr375-spec.html)
 * API Javadoc: [javadoc](https://javaee.github.io/security-api/apidocs/index.html)
+
+## Source Repositories
 
 Source and issue tracking for the JSR-375 specification, API, and RI
 are hosted at the following repositorys in the Java EE organization at GitHub:
