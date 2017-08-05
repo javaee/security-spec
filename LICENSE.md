@@ -11,7 +11,6 @@ IF YOU ARE NOT WILLING TO BE BOUND BY THEM, SELECT THE "DECLINE" BUTTON AT THE B
 THIS PAGE AND THE DOWNLOADING PROCESS WILL NOT CONTINUE.
 
 <br>
-<br>
 Specification: JSR-375 Java EE Security API ("Specification")
 <br>
 Version: 1.0
@@ -27,8 +26,6 @@ Copyright 2017 Oracle America, Inc.
 <br>
 <br>
 All rights reserved.
-<br>
-<br>
 
 ### NOTICE
 The Specification is protected by copyright and the information described therein may be protected by
