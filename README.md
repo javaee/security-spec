@@ -22,12 +22,16 @@ Please refer to the following resources for more information:
 * The [JSR-375 page @ jcp.org](https://jcp.org/en/jsr/detail?id=375)
 * The [JSR-375 discussion group @ groups.io](https://javaee.groups.io/g/javaee-security-spec)
 
+The latest specification and javadoc can be found at:
+
+* [specification](jsr375-spec.pdf)
+* [javadoc](https://javaee.github.io/security-api/apidocs/index.html)
+
 Source and issue tracking for the JSR-375 specification, API, and RI
 are hosted at the following repositorys in the Java EE organization at GitHub:
 
 * Specification: [https://github.com/javaee/security-spec](https://github.com/javaee/security-spec)
 * API Code: [https://github.com/javaee/security-api](https://github.com/javaee/security-api)
-([javadoc](https://javaee.github.io/security-api/apidocs/index.html))
 * RI (Soteria): [https://github.com/javaee/security-soteria](https://github.com/javaee/security-soteria)
 
 # IMPORTANT!
