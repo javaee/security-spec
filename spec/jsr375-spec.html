@@ -1,0 +1,2473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<meta name="author" content="Version 1.0, August 1, 2017">
+<title>Java EE Security API Specification</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+body{-webkit-font-smoothing:antialiased}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Java EE Security API Specification</h1>
+<div class="details">
+<span id="author" class="author">Version 1.0, August 1, 2017</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_license">License</a></li>
+<li><a href="#_preface">Preface</a>
+<ul class="sectlevel2">
+<li><a href="#_notational_conventions">Notational Conventions</a></li>
+<li><a href="#_acknowledgments">Acknowledgments</a>
+<ul class="sectlevel3">
+<li><a href="#_specification_lead">Specification Lead</a></li>
+<li><a href="#_expert_group">Expert Group</a></li>
+<li><a href="#_contributors">Contributors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#concepts">1. Concepts and General Requirements</a>
+<ul class="sectlevel2">
+<li><a href="#_terminology_and_acronyms">1.1. Terminology And Acronyms</a></li>
+<li><a href="#_general_requirements">1.2. General Requirements</a>
+<ul class="sectlevel3">
+<li><a href="#_group_to_role_mapping">1.2.1. Group-To-Role Mapping</a></li>
+<li><a href="#_caller_principal_types">1.2.2. Caller Principal Types</a></li>
+<li><a href="#_expression_language_support">1.2.3. Expression Language Support</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#authentication-mechanism">2. Authentication Mechanism</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction">2.1. Introduction</a></li>
+<li><a href="#_interface_and_theory_of_operation">2.2. Interface and Theory of Operation</a></li>
+<li><a href="#_installation_and_configuration">2.3. Installation and Configuration</a></li>
+<li><a href="#_annotations_and_built_in_httpauthenticationmechanism_beans">2.4. Annotations and Built-In HttpAuthenticationMechanism Beans</a>
+<ul class="sectlevel3">
+<li><a href="#_basic_annotation">2.4.1. BASIC Annotation</a></li>
+<li><a href="#_form_annotation">2.4.2. FORM Annotation</a></li>
+<li><a href="#_custom_form_annotation">2.4.3. Custom FORM Annotation</a></li>
+<li><a href="#_logintocontinue_annotation">2.4.4. LoginToContinue Annotation</a></li>
+<li><a href="#_rememberme_annotation">2.4.5. RememberMe Annotation</a></li>
+<li><a href="#_autoapplysession_annotation">2.4.6. AutoApplySession Annotation</a></li>
+<li><a href="#_implementation_notes">2.4.7. Implementation Notes</a></li>
+<li><a href="#_custom_form_notes">2.4.8. Custom FORM Notes</a></li>
+<li><a href="#_securitycontext_authenticate_notes">2.4.9. SecurityContext.authenticate() Notes</a></li>
+<li><a href="#_autoapplysession_notes">2.4.10. AutoApplySession Notes</a></li>
+</ul>
+</li>
+<li><a href="#_relationship_to_other_specifications">2.5. Relationship to other specifications</a></li>
+</ul>
+</li>
+<li><a href="#identity-store">3. Identity Store</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction_2">3.1. Introduction</a></li>
+<li><a href="#_interface_and_theory_of_operation_2">3.2. Interface and Theory of Operation</a>
+<ul class="sectlevel3">
+<li><a href="#_validating_credentials">3.2.1. Validating Credentials</a></li>
+<li><a href="#_retrieving_caller_information">3.2.2. Retrieving Caller Information</a></li>
+<li><a href="#_declaring_capabilities">3.2.3. Declaring Capabilities</a></li>
+<li><a href="#_handling_multiple_identity_stores">3.2.4. Handling Multiple Identity Stores</a></li>
+<li><a href="#_state">3.2.5. State</a></li>
+<li><a href="#_remembermeidentitystore">3.2.6. RememberMeIdentityStore</a></li>
+</ul>
+</li>
+<li><a href="#_installation_and_configuration_2">3.3. Installation and Configuration</a></li>
+<li><a href="#_annotations_and_built_in_identitystore_beans">3.4. Annotations and Built-In IdentityStore Beans</a>
+<ul class="sectlevel3">
+<li><a href="#_ldap_annotation">3.4.1. LDAP Annotation</a></li>
+<li><a href="#_database_annotation">3.4.2. Database Annotation</a></li>
+</ul>
+</li>
+<li><a href="#_relationship_to_other_specifications_2">3.5. Relationship to Other Specifications</a></li>
+</ul>
+</li>
+<li><a href="#security-context">4. Security Context</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction_3">4.1. Introduction</a></li>
+<li><a href="#_retrieving_and_testing_for_caller_data">4.2. Retrieving and Testing for Caller Data</a></li>
+<li><a href="#_testing_for_access">4.3. Testing for Access</a></li>
+<li><a href="#_triggering_the_authentication_process">4.4. Triggering the Authentication Process</a></li>
+<li><a href="#_relationship_to_other_specifications_3">4.5. Relationship to Other Specifications</a></li>
+</ul>
+</li>
+<li><a href="#_bibliography">Bibliography</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_license"><a class="anchor" href="#_license"></a>License</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ORACLE AMERICA, INC. IS WILLING TO LICENSE THIS SPECIFICATION TO YOU ONLY UPON THE
+CONDITION THAT YOU ACCEPT ALL OF THE TERMS CONTAINED IN THIS LICENSE AGREEMENT
+("AGREEMENT"). PLEASE READ THE TERMS AND CONDITIONS OF THIS AGREEMENT CAREFULLY. BY
+DOWNLOADING THIS SPECIFICATION, YOU ACCEPT THE TERMS AND CONDITIONS OF THIS AGREEMENT.
+IF YOU ARE NOT WILLING TO BE BOUND BY THEM, SELECT THE "DECLINE" BUTTON AT THE BOTTOM OF
+THIS PAGE AND THE DOWNLOADING PROCESS WILL NOT CONTINUE.</p>
+</div>
+<div class="paragraph">
+<p>Specification: JSR-375 Java EE Security API ("Specification")<br>
+Version: 1.0<br>
+Status: Final Approval Ballot<br>
+Release: August 2017</p>
+</div>
+<div class="paragraph">
+<p>Copyright 2017 Oracle America, Inc.<br>
+500 Oracle Parkway, Redwood City, California 94065, U.S.A.<br>
+All rights reserved.</p>
+</div>
+<div class="paragraph">
+<p>NOTICE<br>
+The Specification is protected by copyright and the information described therein may be protected by
+one or more U.S. patents, foreign patents, or pending applications. Except as provided under the
+following license, no part of the Specification may be reproduced in any form by any means without the
+prior written authorization of Oracle America, Inc. ("Oracle") and its licensors, if any. Any use of the
+Specification and the information described therein will be governed by the terms and conditions of this
+Agreement.</p>
+</div>
+<div class="paragraph">
+<p>Subject to the terms and conditions of this license, including your compliance with Paragraphs 1 and 2
+below, Oracle hereby grants you a fully-paid, non-exclusive, non-transferable, limited license (without
+the right to sublicense) under Oracle&#8217;s intellectual property rights to:</p>
+</div>
+<div class="paragraph">
+<p>1.Review the Specification for the purposes of evaluation. This includes: (i) developing implementations
+of the Specification for your internal, non-commercial use; (ii) discussing the Specification with any third
+party; and (iii) excerpting brief portions of the Specification in oral or written communications which
+discuss the Specification provided that such excerpts do not in the aggregate constitute a significant
+portion of the Technology.</p>
+</div>
+<div class="paragraph">
+<p>2.Distribute implementations of the Specification to third parties for their testing and evaluation use,
+provided that any such implementation:<br>
+(i) does not modify, subset, superset or otherwise extend the Licensor Name Space, or include any
+public or protected packages, classes, Java interfaces, fields or methods within the Licensor Name Space
+other than those required/authorized by the Specification or Specifications being implemented;<br>
+(ii) is clearly and prominently marked with the word "UNTESTED" or "EARLY ACCESS" or
+"INCOMPATIBLE" or "UNSTABLE" or "BETA" in any list of available builds and in proximity to every link
+initiating its download, where the list or link is under Licensee&#8217;s control; and<br>
+(iii) includes the following notice:<br>
+"This is an implementation of an early-draft specification developed under the Java Community Process
+(JCP) and is made available for testing and evaluation purposes only. The code is not compatible with
+any specification of the JCP."</p>
+</div>
+<div class="paragraph">
+<p>The grant set forth above concerning your distribution of implementations of the specification is
+contingent upon your agreement to terminate development and distribution of your "early draft"
+implementation as soon as feasible following final completion of the specification. If you fail to do so,
+the foregoing grant shall be considered null and void.</p>
+</div>
+<div class="paragraph">
+<p>No provision of this Agreement shall be understood to restrict your ability to make and distribute to
+third parties applications written to the Specification.</p>
+</div>
+<div class="paragraph">
+<p>Other than this limited license, you acquire no right, title or interest in or to the Specification or any
+other Oracle intellectual property, and the Specification may only be used in accordance with the license
+terms set forth herein. This license will expire on the earlier of: (a) two (2) years from the date of
+Release listed above; (b) the date on which the final version of the Specification is publicly released; or
+(c) the date on which the Java Specification Request (JSR) to which the Specification corresponds is
+withdrawn. In addition, this license will terminate immediately without notice from Oracle if you fail to
+comply with any provision of this license. Upon termination, you must cease use of or destroy the
+Specification.</p>
+</div>
+<div class="paragraph">
+<p>"Licensor Name Space" means the public class or interface declarations whose names begin with "java",
+"javax", "com.oracle" or their equivalents in any subsequent naming convention adopted by Oracle
+through the Java Community Process, or any recognized successors or replacements thereof</p>
+</div>
+<div class="paragraph">
+<p>TRADEMARKS<br>
+No right, title, or interest in or to any trademarks, service marks, or trade names of Oracle or Oracle&#8217;s
+licensors is granted hereunder. Oracle, the Oracle logo, and Java are trademarks or registered
+trademarks of Oracle America, Inc. in the U.S. and other countries.</p>
+</div>
+<div class="paragraph">
+<p>DISCLAIMER OF WARRANTIES<br>
+THE SPECIFICATION IS PROVIDED "AS IS" AND IS EXPERIMENTAL AND MAY CONTAIN DEFECTS OR
+DEFICIENCIES WHICH CANNOT OR WILL NOT BE CORRECTED BY ORACLE. ORACLE MAKES NO
+REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO,
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT
+THAT THE CONTENTS OF THE SPECIFICATION ARE SUITABLE FOR ANY PURPOSE OR THAT ANY PRACTICE
+OR IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS,
+COPYRIGHTS, TRADE SECRETS OR OTHER RIGHTS. This document does not represent any commitment to
+release or implement any portion of the Specification in any product.</p>
+</div>
+<div class="paragraph">
+<p>THE SPECIFICATION COULD INCLUDE TECHNICAL INACCURACIES OR TYPOGRAPHICAL ERRORS. CHANGES
+ARE PERIODICALLY ADDED TO THE INFORMATION THEREIN; THESE CHANGES WILL BE INCORPORATED
+INTO NEW VERSIONS OF THE SPECIFICATION, IF ANY. ORACLE MAY MAKE IMPROVEMENTS AND/OR
+CHANGES TO THE PRODUCT(S) AND/OR THE PROGRAM(S) DESCRIBED IN THE SPECIFICATION AT ANY
+TIME. Any use of such changes in the Specification will be governed by the then-current license for the
+applicable version of the Specification.</p>
+</div>
+<div class="paragraph">
+<p>LIMITATION OF LIABILITY<br>
+TO THE EXTENT NOT PROHIBITED BY LAW, IN NO EVENT WILL ORACLE OR ITS LICENSORS BE LIABLE FOR
+ANY DAMAGES, INCLUDING WITHOUT LIMITATION, LOST REVENUE, PROFITS OR DATA, OR FOR SPECIAL,
+INDIRECT, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS
+OF THE THEORY OF LIABILITY, ARISING OUT OF OR RELATED TO ANY FURNISHING, PRACTICING,
+MODIFYING OR ANY USE OF THE SPECIFICATION, EVEN IF ORACLE AND/OR ITS LICENSORS HAVE BEEN
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
+</div>
+<div class="paragraph">
+<p>You will hold Oracle (and its licensors) harmless from any claims based on your use of the Specification
+for any purposes other than the limited right of evaluation as described above, and from any claims that
+later versions or releases of any Specification furnished to you are incompatible with the Specification
+provided to you under this license.</p>
+</div>
+<div class="paragraph">
+<p>RESTRICTED RIGHTS LEGEND<br>
+If this Software is being acquired by or on behalf of the U.S. Government or by a U.S. Government prime
+contractor or subcontractor (at any tier), then the Government&#8217;s rights in the Software and
+accompanying documentation shall be only as set forth in this license; this is in accordance with 48
+C.F.R. 227.7201 through 227.7202-4 (for Department of Defense (DoD) acquisitions) and with 48 C.F.R.
+2.101 and 12.212 (for non-DoD acquisitions).</p>
+</div>
+<div class="paragraph">
+<p>REPORT<br>
+You may wish to report any ambiguities, inconsistencies or inaccuracies you may find in connection with
+your evaluation of the Specification ("Feedback"). To the extent that you provide Oracle with any
+Feedback, you hereby: (i) agree that such Feedback is provided on a non-proprietary and non-
+confidential basis, and (ii) grant Oracle a perpetual, non-exclusive, worldwide, fully paid-up, irrevocable
+license, with the right to sublicense through multiple levels of sublicensees, to incorporate, disclose, and
+use without limitation the Feedback for any purpose related to the Specification and future versions,
+implementations, and test suites thereof.</p>
+</div>
+<div class="paragraph">
+<p>GENERAL TERMS<br>
+Any action related to this Agreement will be governed by California law and controlling U.S. federal law.
+The U.N. Convention for the International Sale of Goods and the choice of law rules of any jurisdiction
+will not apply.</p>
+</div>
+<div class="paragraph">
+<p>The Specification is subject to U.S. export control laws and may be subject to export or import
+regulations in other countries. Licensee agrees to comply strictly with all such laws and regulations and
+acknowledges that it has the responsibility to obtain such licenses to export, re-export or import as may
+be required after delivery to Licensee.</p>
+</div>
+<div class="paragraph">
+<p>This Agreement is the parties' entire agreement relating to its subject matter. It supersedes all prior or
+contemporaneous oral or written communications, proposals, conditions, representations and
+warranties and prevails over any conflicting or additional terms of any quote, order, acknowledgment,
+or other communication between the parties relating to its subject matter during the term of this
+Agreement. No modification to this Agreement will be binding, unless in writing and signed by an
+authorized representative of each party.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preface"><a class="anchor" href="#_preface"></a>Preface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document is the Java EE Security API Specification, version 1.0.</p>
+</div>
+<div class="sect2">
+<h3 id="_notational_conventions"><a class="anchor" href="#_notational_conventions"></a>Notational Conventions</h3>
+<div class="paragraph">
+<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119, "Key words for use in RFCs to Indicate Requirement Levels" [<a href="https://tools.ietf.org/html/rfc2119">RFC2119</a>].</p>
+</div>
+<div class="paragraph">
+<p>Other documents referenced by this specification are identified by name on first use, and thereafter by a short abbreviation. The "<a href="#bibliography">Bibliography</a>" section at the end of this document provides full references.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acknowledgments"><a class="anchor" href="#_acknowledgments"></a>Acknowledgments</h3>
+<div class="paragraph">
+<p>The author would like to thank the JSR-375 Expert Group and Contributors, and, in particular, Arjan Tijms, whose contributions were critical to the success of the JSR.</p>
+</div>
+<div class="sect3">
+<h4 id="_specification_lead"><a class="anchor" href="#_specification_lead"></a>Specification Lead</h4>
+<div class="paragraph">
+<p>Will Hopkins (Oracle)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_expert_group"><a class="anchor" href="#_expert_group"></a>Expert Group</h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adam Bien</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">David Blevins (Tomitribe)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rudy De Busscher</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ivar Grimstad</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Les Hazlewood (Stormpath, Inc.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will Hopkins (Oracle)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Werner Keil</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matt Konda (Jemurai)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alexander Kosowski (Oracle)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Darran Lofthouse (Red Hat)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jean-Louis Monteiro (Tomitribe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ajay Reddy (IBM)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pedro Igor Silva (Red Hat)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arjan Tijms</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_contributors"><a class="anchor" href="#_contributors"></a>Contributors</h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Guillermo González de Agüero</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">John Hogan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Elder Moraes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fatih Mutluay</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reza Rahman</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ashley Richardson</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="concepts"><a class="anchor" href="#concepts"></a>1. Concepts and General Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter overview information and terminology related to this specification, and also includes a general requirements not specified elsewhere in this document.</p>
+</div>
+<div class="sect2">
+<h3 id="_terminology_and_acronyms"><a class="anchor" href="#_terminology_and_acronyms"></a>1.1. Terminology And Acronyms</h3>
+<div class="paragraph">
+<p>A common understanding of security-related terms is helpful for discussion or specification of security APIs. To that end, we incorporate by reference the excellent Apache Shiro Terminology [<a href="https://shiro.apache.org/terminology.html">SHIROTERM</a>], and define some additional terms used in this document.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Authentication Mechanism </dt>
+<dd>
+<p>The mechanism by which authentication is performed. This mechanism interacts with the caller to obtain credentials and invokes an identity store to match the given credentials with a known user (identity). If a match is found, the Authentication Mechanism uses the found identity to populate attributes (principals) to build an authenticated Subject. If a match is not found, the Authentication Mechanism reports a failed authentication, the caller is not logged in, and is unable to be given authorization.</p>
+</dd>
+<dt class="hdlist1">Caller, Caller Principal</dt>
+<dd>
+<p>A caller is a user that is making a request to an application, or invoking an application API. A Caller Principal is a Principal object representing that user. This specification uses the term caller in preference to the term user in most contexts.</p>
+</dd>
+<dt class="hdlist1">HAM</dt>
+<dd>
+<p>Abbreviation for <em>HttpAuthenticationMechanism</em>, an interface defined by this specification.</p>
+</dd>
+<dt class="hdlist1">Identity Store</dt>
+<dd>
+<p>An Identity Store is a component that can access application-specific security data such as users, groups, roles, and permissions. It can be thought of as a security-specific DAO (Data Access Object). Synonyms: security provider, repository, store, login module (JAAS), identity manager, service provider, relying party, authenticator, user service. Identity Stores usually have a 1-to-1 correlation with a data source such as a relational database, LDAP directory, file system, or other similar resource. As such, implementations of the <em>IdentityStore</em> interface use data source-specific APIs to discover authorization data (roles, permissions, etc), such as JDBC, File IO, Hibernate or JPA, or any other Data Access API.</p>
+</dd>
+<dt class="hdlist1">JACC</dt>
+<dd>
+<p>JSR-115, "Java Authorization Contract for Containers", version 1.5 [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html">JACC</a>].</p>
+</dd>
+<dt class="hdlist1">JASPIC</dt>
+<dd>
+<p>JSR-196, "Java Authentication SPI for Containers", version 1.1 [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>].</p>
+</dd>
+<dt class="hdlist1">SAM</dt>
+<dd>
+<p>Abbreviation for <em>ServerAuthModule</em>, an interface defined by JASPIC.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_general_requirements"><a class="anchor" href="#_general_requirements"></a>1.2. General Requirements</h3>
+<div class="paragraph">
+<p>The following general requirements are defined by this specification.</p>
+</div>
+<div class="sect3">
+<h4 id="_group_to_role_mapping"><a class="anchor" href="#_group_to_role_mapping"></a>1.2.1. Group-To-Role Mapping</h4>
+<div class="paragraph">
+<p>Various Java EE specifications define how roles are declared for an application, and how access to application resources can be restricted to users that have a specific role. The specifications are largely silent on the question of how users are assigned to roles, however. Most application servers have proprietary mechanisms for determining the roles a user has.</p>
+</div>
+<div class="paragraph">
+<p>Application servers MUST provide a default mapping from group names to roles. That is, a caller who is a member of group "foo" is considered to have role "foo". This default mapping MAY be overridden by explicit proprietary configuration, but, when not overridden, provides sensible and predictable behavior for portable applications.</p>
+</div>
+<div class="paragraph">
+<p>An application server MAY provide a default mapping from caller principal names to roles. That is, a caller with the name "bar" is considered to have role "bar". This default mapping MAY be overridden by proprietary configuration.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_caller_principal_types"><a class="anchor" href="#_caller_principal_types"></a>1.2.2. Caller Principal Types</h4>
+<div class="paragraph">
+<p>This specification defines a principal type called <em>CallerPrincipal</em> to represent the identity of an application caller. Historically, application servers have used different principal types to represent an application&#8217;s callers, and various Java EE specifications (e.g., JASPIC), provide abstractions to accommodate, "the container&#8217;s representation of the caller principal".</p>
+</div>
+<div class="paragraph">
+<p>This specification RECOMMENDS that Java EE application servers that rely on container-specific caller principal types derive those types by extending <em>CallerPrincipal</em>, so that portable applications can rely on a consistent representation of the caller principal.</p>
+</div>
+<div class="paragraph">
+<p>However, we also distinguish here between a "container caller principal" and an "application caller principal", and explicitly allow for each to be represented by a different <em>Principal</em> type.</p>
+</div>
+<div class="paragraph">
+<p>The container caller principal is a <em>Principal</em> that the container uses to represent a caller&#8217;s identity. An implementation of this specification MAY choose any <em>Principal</em> type for this purpose. The type chosen may carry additional information, or provide unique behaviors.</p>
+</div>
+<div class="paragraph">
+<p>An application caller principal is a <em>Principal</em> that an application, or an implementation of, e.g., an <em>HttpAuthenticationMechanism</em>, uses to represent a caller&#8217;s identity. An application MAY choose any <em>Principal</em> type for that purpose. The type chosen may carry additional information, or provide unique behaviors.</p>
+</div>
+<div class="paragraph">
+<p>Because both containers and applications can have legitimate requirements for specific <em>Principal</em> types to represent a caller, and those types may differ, it MUST be possible for the container to establish both the container&#8217;s and the application&#8217;s caller principal as the caller&#8217;s identity; for example, by including both in a Subject representing the caller.</p>
+</div>
+<div class="paragraph">
+<p>When both a container caller principal and an application caller principal are present, the value obtained by calling <em>getName()</em> on both principals MUST be the same.</p>
+</div>
+<div class="paragraph">
+<p>When no specific application caller principal is supplied during authentication, the caller&#8217;s identity should be represented by a single principal, the container&#8217;s caller principal.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_expression_language_support"><a class="anchor" href="#_expression_language_support"></a>1.2.3. Expression Language Support</h4>
+<div class="paragraph">
+<p>This specification defines a number of annotations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">DatabaseIdentityStoreDefinition
+LdapIdentityStoreDefinition
+
+BasicAuthenticationMechanismDefinition
+CustomFormAuthenticationMechanismDefinition
+FormAuthenticationMechanismDefinition
+
+LoginToContinue
+RememberMe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Attributes on these annotations can be provided either as actual values, or as Expression Language 3.0 expressions. In cases where the return type of an attribute is not String, an "EL alternative" attribute is provided, with "Expression" appended to the name. If an "EL alternative" attribute has a non-empty value, it takes precedence over the attribute it&#8217;s an alternative to, and must contain a valid EL expression that evaluates to the same type as the attribute it&#8217;s an alternative to.</p>
+</div>
+<div class="paragraph">
+<p>For more information, see the package javadoc for the javax.security.enterprise package.</p>
+</div>
+<div class="paragraph">
+<p>Expression Language 3.0 is specified by JSR-341, "Expression Language", version 3.0 [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr341/index.html">EL30</a>]</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="authentication-mechanism"><a class="anchor" href="#authentication-mechanism"></a>2. Authentication Mechanism</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes the <em>HttpAuthenticationMechanism</em> interface and contract. <em>HttpAuthenticationMechanism</em> is used to authenticate callers of web applications, and is specified only for use in the servlet container. It is explicitly not defined for use with other containers (EJB, JMS, JCA, etc.).</p>
+</div>
+<div class="sect2">
+<h3 id="_introduction"><a class="anchor" href="#_introduction"></a>2.1. Introduction</h3>
+<div class="paragraph">
+<p>A web application consists of resources that can be accessed by any number of callers, who are initially unknown to the application. Callers make themselves known to the application through the process of authentication.</p>
+</div>
+<div class="paragraph">
+<p>During authentication, the caller presents proof of identity&#8201;&#8212;&#8201;a token or credential of some kind&#8201;&#8212;&#8201;which the application (or container) then validates. If the proof is valid, the application (or container) establishes the caller&#8217;s identity, then proceeds to the authorization step, in which it determines whether the caller has permission to access the requested resources.</p>
+</div>
+<div class="paragraph">
+<p>In some cases (for example, username/password authentication) the interaction between the caller and the application is simple. In other cases, a lengthier dialog is required&#8201;&#8212;&#8201;an application may send a random nonce to the caller, which must then use that nonce in the construction of an authentication token, or there may be interactions with a third party that vouches for the caller&#8217;s identity, or the authenticity of the provided credential.</p>
+</div>
+<div class="paragraph">
+<p>The Java EE Platform already specifies mechanisms for authenticating users of web applications. JSR-340, "Java Servlet Specification", version 3.1 [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>] specifies a declarative mechanism for configuring an application to provide BASIC, DIGEST, FORM, or CERT authentication, with authentication performed automatically by the container based on the application&#8217;s configuration, which, in the case of FORM authentication, can include custom form pages.</p>
+</div>
+<div class="paragraph">
+<p>In addition, [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>] specifies a general-purpose mechanism for securing messages sent between Java EE clients and servers. JASPIC defines an SPI called <em>ServerAuthModule</em>, which enables development of authentication modules to handle any credential type, or engage in interaction of arbitrary complexity with clients and third parties. [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>] also defines the Servlet Container Profile, which specifies how JASPIC mechanisms, including <em>ServerAuthModules</em>, are integrated with the servlet container.</p>
+</div>
+<div class="paragraph">
+<p>While both existing mechanisms are important and useful, each has limitations from the point of view of an application developer. The servlet container&#8217;s <em>login-config</em> mechanism is limited to the <em>auth-method</em> types defined by [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>]&#8201;&#8212;&#8201;it doesn&#8217;t support other credential types, or complex interactions with callers. It also relies on unspecified container mechanisms to associate identity stores with applications. There is no way for an application to ensure that callers are authenticated against the desired identity store, or, indeed, against <em>any</em> identity store.</p>
+</div>
+<div class="paragraph">
+<p>JASPIC, by way of contrast, is extremely flexible and powerful, but is also complex. Writing an <em>AuthModule</em>, and arranging for the web container to use it for authentication, is a non-trivial exercise. Additionally, there is no declarative configuration syntax for JASPIC, and there is no well-defined mechanism for a container to override an application&#8217;s programmatically-registered <em>AuthModule</em>. A container can choose to register its own <em>AuthModule</em>, or to remove one registered by an application, but JASPIC will always use the most-recently-registered module&#8201;&#8212;&#8201;the outcome is dependent on the order in which the application and the container attempt to register their respective modules.</p>
+</div>
+<div class="paragraph">
+<p>The <em>HttpAuthenticationMechanism</em> interface is designed to capitalize on the strengths of existing authentication mechanisms, while mitigating the corresponding limitations. It is essentially a simplified, servlet-container-specific version of the JASPIC <em>ServerAuthModule</em> interface, retaining that interface&#8217;s flexibility and power, but reducing the cost of implementation. An <em>HttpAuthenticationMechanism</em> is a CDI bean, and is therefore made available to the container automatically by CDI. The container is responsible for placing the <em>HttpAuthenticationMechanism</em> in service.</p>
+</div>
+<div class="paragraph">
+<p>An application MAY supply its own <em>HttpAuthenticationMechanism</em>, if desired. The servlet container MUST provide several default <em>HttpAuthenticationMechanism</em> implementations, which an application can select and configure via standard annotations. The container MAY also provide additional mechanisms beyond those required by this specification. The rules governing how the container selects an <em>HttpAuthenticationMechanism</em>, and how it is placed in service, are described in the "<a href="#_installation_and_configuration">Installation and Configuration</a>" section of this chapter. The required default mechanisms, and corresponding annotations, are described in the "<a href="#_annotations_and_built_in_httpauthenticationmechanism_beans">Annotations and Built-In HttpAuthenticationMechanism Beans</a>" section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_interface_and_theory_of_operation"><a class="anchor" href="#_interface_and_theory_of_operation"></a>2.2. Interface and Theory of Operation</h3>
+<div class="paragraph">
+<p>The <em>HttpAuthenticationMechanism</em> interface defines three methods that align closely with the methods defined by the JASPIC <em>ServerAuth</em> interface. The primary distinction is syntactic; unlike JASPIC, <em>HttpAuthenticationMechanism</em> is specified for the servlet container only, and can therefore reference servlet types in its method signatures. Only the <em>validateRequest()</em> method must be implemented; default behaviors are specified for the other two methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">AuthenticationStatus validateRequest(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     HttpMessageContext httpMessageContext
+                                    ) throws AuthenticationException;
+
+AuthenticationStatus secureResponse(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    HttpMessageContext httpMessageContext
+                                   ) throws AuthenticationException;
+
+void cleanSubject(HttpServletRequest request,
+                  HttpServletResponse response,
+                  HttpMessageContext httpMessageContext);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each method performs the same function as the corresponding <em>ServerAuth</em> method. At runtime, the methods will be invoked by a container-supplied <em>ServerAuthModule</em> that serves as a wrapper, or container, for the <em>HttpAuthenticationMechanism</em>. The container-supplied <em>ServerAuthModule</em> translates the method parameters passed to it, invokes the <em>HttpAuthenticationMechanism</em> method, and returns the resulting status to its caller. The behavior of the <em>HttpAuthenticationMechanism</em> methods should therefore be functionally equivalent to the behavior specified by the JASPIC Servlet Container Profile for the equivalent <em>ServerAuthModule</em> methods.</p>
+</div>
+<div class="paragraph">
+<p>Summarized, this means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>validateRequest()</em> will be invoked before the <em>doFilter()</em> method of any servlet filter or the <em>service()</em> method of any servlet in the application for requests to constrained as well as to unconstrained resources, and, in addition, in response to application code calling the <em>authenticate()</em> method on the <em>HttpServletRequest</em>.</p>
+</li>
+<li>
+<p><em>secureResponse()</em> will be invoked after the <em>doFilter()</em> method of any servlet filter or the <em>service()</em> method of any servlet in the application for requests to constrained as well as to unconstrained resources, but only if any of these two methods have indeed been invoked.</p>
+</li>
+<li>
+<p><em>cleanSubject()</em> will be invoked in response to the application calling the <em>logout()</em> method on the <em>HttpServletRequest</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <em>validateRequest()</em> method is provided to allow a caller to authenticate. An implementation of this method can inspect the HTTP request to extract a credential or other information, or it can write to the HTTP response to, for example, redirect a caller to an OAuth provider, or return an error response. After a credential has been obtained and validated, the result of the validation can be communicated to the container using the <em>HttpMessageContext</em> parameter, which is described in more detail below.</p>
+</div>
+<div class="paragraph">
+<p>The <em>secureResponse()</em> method is provided to allow post processing on the response generated by a servlet and/or servlet filter, such as encrypting it.</p>
+</div>
+<div class="paragraph">
+<p>The <em>cleanSubject()</em> is provided to allow for cleanup after a caller is logged out. For example, an authentication mechanism that stores state within a cookie can remove that cookie here.</p>
+</div>
+<div class="paragraph">
+<p>The <em>HttpMessageContext</em> interface defines methods that an <em>HttpAuthenticationMechanism</em> can invoke to communicate with the JASPIC <em>ServerAuthModule</em> (bridge module) that invokes it. The container MUST provide an implementation of the interface that supports the necessary container integrations.</p>
+</div>
+<div class="paragraph">
+<p>The <em>HttpMessageContextWrapper</em> class implements a wrapper can be used, in a manner similar to <em>HttpServletRequestWrapper</em>, to provide custom behavior.</p>
+</div>
+<div class="paragraph">
+<p>See javadoc for a detailed description of <em>HttpMessageContext</em> and <em>HttpMessageContextWrapper</em>. See below for more on the JASPIC bridge module.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installation_and_configuration"><a class="anchor" href="#_installation_and_configuration"></a>2.3. Installation and Configuration</h3>
+<div class="paragraph">
+<p>An <em>HttpAuthenticationMechanism</em> must be a CDI bean, and is therefore visible to the container through CDI if it is packaged in a bean archive, which generally includes Java EE modules and application archives, as well as other archives and classes that are not part of an application, but are required by the Java EE specification to be visible to applications. See the CDI specification for details on bean archives and bean discovery. An <em>HttpAuthenticationMechanism</em> is assumed to be normal scoped.</p>
+</div>
+<div class="paragraph">
+<p>It MUST be possible for the definition of an <em>HttpAuthenticationMechanism</em> to exist within the application archive. Alternatively such definition MAY also exists outside the application archive, for example in a jar added to the classpath of an application server.</p>
+</div>
+<div class="paragraph">
+<p>An application packages its own <em>HttpAuthenticationMechanism</em> by including in a bean archive that is part of the application. Alternatively, it may select and configure one of the container&#8217;s built-in mechanisms using the corresponding annotation, as described in the "<a href="#_annotations_and_built_in_httpauthenticationmechanism_beans">Annotations and Built-In HttpAuthenticationMechanism Beans</a>" section below.</p>
+</div>
+<div class="paragraph">
+<p>The container decides which <em>HttpAuthenticationMechanism</em> to place in service using the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The container MAY override an application&#8217;s chosen <em>HttpAuthenticationMechanism</em> with one selected by the container, but SHOULD do so only if explicitly configured to.</p>
+</li>
+<li>
+<p>If the container does not override the application, it MUST place in service any <em>HttpAuthenticationMechanism</em> that is provided, either directly or via annotation, by the application.</p>
+</li>
+<li>
+<p>If the application makes more than one <em>HttpAuthenticationMechanism</em> available, either directly or via annotation or both, the results are undefined by this specification.</p>
+</li>
+<li>
+<p>If the application does not supply an <em>HttpAuthenticationMechanism</em>, or select one of the built-in mechanisms, the container MAY choose an <em>HttpAuthenticationMechanism</em> to place in service, but is NOT REQUIRED to do so.</p>
+</li>
+<li>
+<p>If the application does not make an <em>HttpAuthenticationMechanism</em> available, and the container does not choose one to place in service, then <em>HttpAuthenticationMechanism</em> is not used.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The container MUST use JASPIC when placing an <em>HttpAuthenticationMechanism</em> in service. The container MUST supply a "bridge" <em>ServerAuthModule</em> that integrates <em>HttpAuthenticationMechanism</em> with JASPIC. The bridge module MUST look up the correct <em>HttpAuthenticationMechanism</em> using CDI, then delegate to the <em>HttpAuthenticationMechanism</em> when the bridge module&#8217;s methods are invoked. Since the method signatures and return values of the two interfaces are similar, but not the same, the bridge module MUST convert back and forth.</p>
+</div>
+<div class="paragraph">
+<p>When an <em>HttpAuthenticationMechanism</em> is placed in service, the container MUST supply a bridge <em>ServerAuthModule</em> and the necessary supporting modules (<em>AuthContext</em>, <em>AuthConfig</em>, <em>AuthConfigProvider</em>), and arrange for the <em>AuthConfigProvider</em> to be registered with the JASPIC <em>AuthConfigFactory</em>, such that the bridge module is registered for the application context.</p>
+</div>
+<div class="paragraph">
+<p>When an <em>HttpAuthenticationMechanism</em> is placed in service, the container MUST NOT register any <em>AuthConfigProvider</em> other than the one corresponding to the bridge <em>ServerAuthModule</em>. Given the nature of JASPIC, however, it&#8217;s possible that some other entity could register a different <em>AuthConfigProvider</em> after the container has registered the bridge module&#8217;s <em>AuthConfigProvider</em>. The container is NOT REQUIRED to prevent this.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_annotations_and_built_in_httpauthenticationmechanism_beans"><a class="anchor" href="#_annotations_and_built_in_httpauthenticationmechanism_beans"></a>2.4. Annotations and Built-In HttpAuthenticationMechanism Beans</h3>
+<div class="paragraph">
+<p>A Java EE container MUST support built-in beans for the following <em>HttpAuthenticationMechanism</em> types, to be made available via configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>BASIC - Authenticates according to the mechanism as described in 13.6.1, "HTTP Basic Authentication", in [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>]. See also RFC 7617, "The <em>Basic</em> HTTP Authentication Scheme" [<a href="https://tools.ietf.org/html/rfc7617">RFC7617</a>]. This bean is activated and configured via the <em>@BasicAuthenticationMechanismDefinition</em> annotation.</p>
+</li>
+<li>
+<p>FORM - Authenticates according to the mechanism as described in 13.6.3, "Form Based Authentication", in [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>]. This bean is activated and configured via the <em>@FormAuthenticationMechanismDefinition</em> annotation.</p>
+</li>
+<li>
+<p>Custom FORM - A variant on FORM, with the difference that continuing the authentication dialog as described in [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>], section 13.6.3, step 3, and further clarified in section 13.6.3.1, does not happen by posting back to j_security_check, but by invoking <em>SecurityContext.authenticate()</em> with the credentials the application collected. This bean is activated and configured via the <em>@CustomFormAuthenticationMechanismDefinition</em> annotation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.</p>
+</div>
+<div class="paragraph">
+<p>All of the built-in beans MUST support authentication using <em>IdentityStore</em>, described in Chapter 3, "<a href="#identity-store">Identity Store</a>", but MAY fall-back to container-specific methods if no <em>IdentityStore</em> is available.</p>
+</div>
+<div class="paragraph">
+<p>See also the "<a href="#_implementation_notes">Implementation Notes</a>" section of this chapter.</p>
+</div>
+<div class="paragraph">
+<p>The annotations are defined as shown in the following sections.</p>
+</div>
+<div class="sect3">
+<h4 id="_basic_annotation"><a class="anchor" href="#_basic_annotation"></a>2.4.1. BASIC Annotation</h4>
+<div class="paragraph">
+<p>The following annotation is used to configure the built-in BASIC authentication mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Retention(RUNTIME)
+@Target(TYPE)
+public @interface BasicAuthenticationMechanismDefinition {
+
+    /**
+     * Name of realm that will be sent via the &lt;code&gt;WWW-Authenticate&lt;/code&gt; header.
+     * &lt;p&gt;
+     * Note that this realm name &lt;b&gt;does not&lt;/b&gt; couple a named identity store
+     * configuration to the authentication mechanism.
+     *
+     * @return Name of realm
+     */
+    String realmName() default "";
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_form_annotation"><a class="anchor" href="#_form_annotation"></a>2.4.2. FORM Annotation</h4>
+<div class="paragraph">
+<p>The following annotation is used to configure the built-in FORM authentication mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Retention(RUNTIME)
+@Target(TYPE)
+public @interface FormAuthenticationMechanismDefinition {
+
+    @Nonbinding
+    LoginToContinue loginToContinue();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See also the "<a href="#_logintocontinue_annotation">LoginToContinue Annotation</a>" section below.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_custom_form_annotation"><a class="anchor" href="#_custom_form_annotation"></a>2.4.3. Custom FORM Annotation</h4>
+<div class="paragraph">
+<p>The following annotation is used to configure the built-in Custom FORM authentication mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Retention(RUNTIME)
+@Target(TYPE)
+public @interface CustomFormAuthenticationMechanismDefinition {
+
+    @Nonbinding
+    LoginToContinue loginToContinue();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See also the "<a href="#_logintocontinue_annotation">LoginToContinue Annotation</a>" and "<a href="#_custom_form_notes">Custom FORM Notes</a>" sections below.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logintocontinue_annotation"><a class="anchor" href="#_logintocontinue_annotation"></a>2.4.4. LoginToContinue Annotation</h4>
+<div class="paragraph">
+<p>The <em>LoginToContinue</em> annotation provides an application with the ability to declaratively add "login to continue" functionality to an authentication mechanism. "Login to continue" conceptually refers to the algorithm (flow) described by the numbered steps in [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>], Section 13.6.3, "Form Based Authentication".</p>
+</div>
+<div class="paragraph">
+<p>The annotation is also used to configure the login page, error page, and redirect/forward behavior for the built-in form-based authentication mechanisms (implicitly suggesting, but not requiring, that those authentication mechanisms use the backing interceptor for this annotation, which is described below).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface LoginToContinue {
+
+    @Nonbinding
+    String loginPage() default "/login";
+
+    @Nonbinding
+    boolean useForwardToLogin() default true;
+
+    @Nonbinding
+    String useForwardToLoginExpression() default "";
+
+    @Nonbinding
+    String errorPage() default "/login-error";
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The container MUST provide an interceptor implementation, at priority <em>PLATFORM_BEFORE</em> + 220, that backs the <em>LoginToContinue</em> annotation and intercepts calls to the configured <em>HttpAuthenticationMechanism</em>. The interceptor MUST behave as follows when intercepting calls to the <em>HttpAuthenticationMechanism</em>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Intercepting <em>validateRequest()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Determine if there is any stale state in the request context, due to a previously aborted flow involving "login to continue". If so, clear the stale state.</p>
+</li>
+<li>
+<p>Determine if this request is a new caller-initiated authentication, by calling <em>isNewAuthentication()</em> on the <em>AuthenticationParameters</em> object available from <em>HttpMessageContext</em>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If <em>isNewAuthentication()</em> returns true, update the request state to indicate that this is a caller-initiated authentication.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If the request is a caller-initiated authentication, continue with flow <em>processCallerInitiatedAuthentication</em>.</p>
+</li>
+<li>
+<p>Otherwise, if the request is not a caller-initiated authentication, continue with flow <em>processContainerInitiatedAuthentication</em>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Flow processCallerInitiatedAuthentication</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Call the next <em>Interceptor</em>, and remember the resulting <em>AuthenticationStatus</em>.</p>
+</li>
+<li>
+<p>If the result was <em>AuthenticationStatus.SUCCESS</em>, and <em>HttpMessageContext.getCallerPrincipal()</em> returns a non-null principal, clear all state.</p>
+</li>
+<li>
+<p>Return the <em>AuthenticationStatus</em>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Flow processContainerInitiatedAuthentication</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Determine how far the caller is in the "login to continue" flow by comparing the request and state against the following numbered and named steps:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><em>OnInitialProtectedURL</em>: Protected resource requested and no saved request state.</p>
+</li>
+<li>
+<p><em>OnLoginPostback</em>: A postback after redirecting the caller in Step 1. (Note: this is not necessarily the resource the caller was redirected to&#8201;&#8212;&#8201;for example, a redirect to <em>/login</em> could result in a postback to <em>j_security_check</em>, or to <em>/login2</em>.)</p>
+</li>
+<li>
+<p><em>OnOriginalURLAfterAuthenticate</em>: A request on the original, protected URL from Step 1, with authentication data and saved request state.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>If the step, as described above, can be determined, continue with the flow having the same name as that step, otherwise return the result of calling the next <em>Interceptor</em>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Flow OnInitialProtectedURL</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Save all request details (URI, headers, body, etc.) to the state.</p>
+</li>
+<li>
+<p>Redirect or forward to <em>LoginToContinue.loginPage()</em>, depending on the value of the <em>useForwardToLogin()</em> attribute.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Flow OnLoginPostback</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Call the next <em>Interceptor</em>, and remember the resulting <em>AuthenticationStatus</em>.</p>
+</li>
+<li>
+<p>If the result was <em>AuthenticationStatus.SUCCESS</em>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If <em>HttpMessageContext.getCallerPrincipal()</em> returns <em>null</em>, return <em>AuthenticationStatus.SUCCESS</em></p>
+</li>
+<li>
+<p>If the current request matches the saved request state (same URI, headers, etc.), return <em>AuthenticationStatus.SUCCESS</em></p>
+</li>
+<li>
+<p>If the current request does not match the saved request state, save the authentication state (minimally, the caller principal and groups from the <em>HttpMessageContext</em>) and redirect to the full request URL as stored in the saved request state.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If the result was <em>AuthenticationStatus.SEND_FAILURE</em>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If <em>LoginToContinue.errorPage()</em> is non-null and non-empty, redirect to <em>LoginToContinue.errorPage()</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Return the <em>AuthenticationStatus</em>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Flow OnOriginalURLAfterAuthenticate</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Retrieve the saved request and authentication details.</p>
+</li>
+<li>
+<p>Clear all state related to "login to continue".</p>
+</li>
+<li>
+<p>Set a wrapped request into <em>HttpMessageContext</em> that provides all the original request details (headers, body, method, etc.) from the saved request state.</p>
+</li>
+<li>
+<p>Call the <em>HttpMessageContext.notifyContainerAboutLogin()</em> method with the caller principal and groups from the saved authentication state.</p>
+</li>
+<li>
+<p>Return <em>AuthenticationStatus.SUCCESS</em>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>secureResponse()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>secureResponse()</em> method SHOULD NOT be intercepted.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>cleanSubject()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>cleanSubject()</em> method SHOULD NOT be intercepted.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See also the <a href="#_securitycontext_authenticate_notes">SecurityContext.authenticate() Notes</a> section below.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rememberme_annotation"><a class="anchor" href="#_rememberme_annotation"></a>2.4.5. RememberMe Annotation</h4>
+<div class="paragraph">
+<p>The <em>RememberMe</em> annotation is used to configure a <em>RememberMeIdentityStore</em>, which must be provided by the application. To use <em>RememberMe</em>, the application must provide an <em>HttpAuthenticationMechanism</em> and annotate the <em>HttpAuthenticationMechanism</em> with the <em>RememberMe</em> annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface RememberMe {
+
+    @Nonbinding
+    int cookieMaxAgeSeconds() default 86400; // 1 day
+
+    @Nonbinding
+    String cookieMaxAgeSecondsExpression() default "";
+
+    @Nonbinding
+    boolean cookieSecureOnly() default true;
+
+    @Nonbinding
+    String cookieSecureOnlyExpression() default "";
+
+    @Nonbinding
+    boolean cookieHttpOnly() default true;
+
+    @Nonbinding
+    String cookieHttpOnlyExpression() default "";
+
+    @Nonbinding
+    String cookieName() default "JREMEMBERMEID";
+
+    @Nonbinding
+    boolean isRememberMe() default true;
+
+    @Nonbinding
+    String isRememberMeExpression() default "";
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The container MUST provide an interceptor implementation at priority <em>PLATFORM_BEFORE</em> + 210 that backs the <em>RememberMe</em> annotation and intercepts calls to the configured <em>HttpAuthenticationMechanism</em>. The interceptor MUST behave as follows when intercepting calls to the <em>HttpAuthenticationMechanism</em>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Intercepting <em>validateRequest()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Determine whether there is a RememberMe cookie in the request</p>
+</li>
+<li>
+<p>If the cookie is present:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Use it to construct a <em>RememberMeCredential</em> and call the <em>validate()</em> method of the <em>RememberMeIdentityStore</em>.</p>
+</li>
+<li>
+<p>If the validate succeeds, call _HttpMessageContext.notifyContainerAboutLogin(), passing the CallerPrincipal and CallerGroups returned by _validate().</p>
+</li>
+<li>
+<p>If the validate fails, remove the cookie from the request.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If no cookie is present, or if the attempt to validate a cookie failed, authenticate the caller normally by calling <em>proceed() on the _InvocationContext</em>.</p>
+</li>
+<li>
+<p>If authentication succeeds, and the caller has requested to be remembered, as determined by evaluating the <em>isRememberMeExpression()</em>, then:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Call the <em>generateLoginToken()</em> method of the <em>RememberMeIdentityStore</em>.</p>
+</li>
+<li>
+<p>Set the new cookie with parameters as configured on the <em>RememberMe</em> annotation.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>secureResponse()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>secureResponse()</em> method SHOULD NOT be intercepted.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>cleanSubject()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>If there is a RememberMe cookie in the request, then:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove the cookie.</p>
+</li>
+<li>
+<p>Call the <em>removeLoginToken()</em> method of the <em>RememberMeIdentityStore</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See also the description of <em>RememberMeIdentityStore</em> in Chapter 3, "<a href="#identity-store">Identity Store</a>".</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_autoapplysession_annotation"><a class="anchor" href="#_autoapplysession_annotation"></a>2.4.6. AutoApplySession Annotation</h4>
+<div class="paragraph">
+<p>The <em>AutoApplySession</em> annotation provides a way to declaratively enable JASPIC <em>javax.servlet.http.registerSession</em> behavior for an authentication mechanism, and automatically apply it for every request.</p>
+</div>
+<div class="paragraph">
+<p>The <em>javax.servlet.http.registerSession</em> property is described in Section 3.8.4 of [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>].</p>
+</div>
+<div class="paragraph">
+<p>This annotation embodies the concept of a caller being authenticated over a series of multiple HTTP requests (together, a "session"). The built-in form-based authentication mechanisms use this same concept. It is therefore implicitly suggested, but not required, that the form-based authentication mechanisms use the backing interceptor for this annotation to establish and maintain their sessions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Inherited
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface AutoApplySession {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The container MUST provide an interceptor implementation at priority <em>PLATFORM_BEFORE</em> + 200 that backs the <em>AutoApplySession</em> annotation and intercepts calls to the configured <em>HttpAuthenticationMechanism</em>. The interceptor MUST behave as follows when intercepting calls to the <em>HttpAuthenticationMechanism</em>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Intercepting <em>validateRequest()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Get the <em>HttpServletRequest</em> from the <em>HttpMessageContext</em> that is passed as an argument to <em>validateRequest()</em>.</p>
+</li>
+<li>
+<p>Get the <em>Principal</em> from the <em>HttpServletRequest</em> (via <em>getUserPrincipal()</em>).</p>
+</li>
+<li>
+<p>If the <em>Principal</em> is null:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Call the next <em>Interceptor</em>, and remember the resulting <em>AuthenticationStatus</em>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If the result is <em>AuthenticationStatus.SUCCESS</em>, get the <em>Map</em> object from the <em>MessageInfo</em> in the <em>HttpMessageContext</em>, and add an entry to the <em>Map</em> with key "<em>javax.servlet.http.registerSession</em>" and value "<em>true</em>".</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Return the <em>AuthenticationStatus</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If the <em>Principal</em> is not null:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a new <em>CallerPrincipalCallback</em> instance, passing the <em>Principal</em> and client subject obtained from <em>HttpMessageContext</em> to the constructor.</p>
+</li>
+<li>
+<p>Obtain the <em>CallbackHandler</em> from <em>HttpMessageContext</em>, and have it handle the <em>CallerPrincipalCallback</em>.</p>
+</li>
+<li>
+<p>Return <em>AuthenticationStatus.SUCCESS</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>secureResponse()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>secureResponse()</em> method SHOULD NOT be intercepted.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Intercepting <em>cleanSubject()</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>cleanSubject()</em> method SHOULD NOT be intercepted.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See also the <a href="#_autoapplysession_notes">AutoApplySession Notes</a> section below.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_implementation_notes"><a class="anchor" href="#_implementation_notes"></a>2.4.7. Implementation Notes</h4>
+<div class="paragraph">
+<p>Section 14.4, item 18, of [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>] describes requirements for supporting BASIC and FORM authentication via the web.xml <em>login-config</em> element. This specification requires that implementations of BASIC and FORM be made available as <em>HttpAuthenticationMechanism</em> CDI beans. The servlet container is NOT REQUIRED to implement separate and independent mechanisms to satisfy each requirement. Instead, the container MAY choose to provide a single mechanism, for each of BASIC and FORM, that meets the requirements of both specifications; i.e., an implementation that can be configured via <em>login-config</em>, but which is also made available as an <em>HttpAuthenticationMechanism</em> if the application uses the corresponding annotation. Equally, the container is NOT REQUIRED to provide a unified implementation, and MAY satisfy the two requirements using separate, independent implementations.</p>
+</div>
+<div class="paragraph">
+<p>An implementation of BASIC or FORM is NOT REQUIRED to support <em>IdentityStore</em> when configured via <em>login-config</em>, regardless of whether the container has provided a single mechanism or separate mechanisms to satisfy the <em>login-config</em> and <em>HttpAuthenticationMechanism</em> requirements. Implementations MAY support <em>IdentityStore</em> for all configuration methods.</p>
+</div>
+<div class="paragraph">
+<p>If an application provides an <em>HttpAuthenticationMechanism</em>, and also configures a <em>login-config</em> element in web.xml, the container MAY fail deployment, but is NOT REQUIRED to. If the container does not fail deployment, it MUST use only the <em>HttpAuthenticationMechanism</em> to authenticate the application&#8217;s callers (i.e., it MUST ignore the <em>login-config</em> from web.xml).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_custom_form_notes"><a class="anchor" href="#_custom_form_notes"></a>2.4.8. Custom FORM Notes</h4>
+<div class="paragraph">
+<p>The Custom FORM variant is intended to align better with modern Java EE technologies such as CDI, Expression Language, Bean Validation and specifically JSF.</p>
+</div>
+<div class="paragraph">
+<p>Below is an example showing how the mechanism can be used with those technologies.</p>
+</div>
+<div class="paragraph">
+<p>Consider the following JSF Facelet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">    &lt;h:messages /&gt;
+
+    &lt;body&gt;
+        &lt;p&gt;
+            Login to continue
+        &lt;/p&gt;
+
+         &lt;form jsf:id="form"&gt;
+            &lt;p&gt;
+                &lt;strong&gt;Username &lt;/strong&gt;
+                &lt;input jsf:id="username" type="text"
+                    jsf:value="#{loginBacking.username}" /&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;strong&gt;Password &lt;/strong&gt;
+                &lt;input jsf:id="password" type="password"
+                    jsf:value="#{loginBacking.password}" /&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;input type="submit" value="Login"
+                    jsf:action="#{loginBacking.login}" /&gt;
+            &lt;/p&gt;
+        &lt;/form&gt;
+
+    &lt;/body&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The "Username" and "Password" inputs are bound via expression language to properties of a named CDI bean, and the bean&#8217;s login() method is invoked to authenticate the user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Named
+@RequestScoped
+public class LoginBacking {
+
+    @NotNull
+    private String username;
+
+    @NotNull
+    private String password;
+
+    @Inject
+    private SecurityContext securityContext;
+
+    @Inject
+    private FacesContext facesContext;
+
+    public void login() {
+
+        Credential credential =
+            new UsernamePasswordCredential(username, new Password(password));
+
+        AuthenticationStatus status = securityContext.authenticate(
+            getRequest(facesContext),
+            getResponse(facesContext),
+            withParams()
+                .credential(credential));
+
+        if (status.equals(IN_PROGRESS)) {
+            facesContext.responseComplete();
+        } else if (status.equals(FAILURE)) {
+            addError(facesContext, "Authentication failed");
+        }
+
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_securitycontext_authenticate_notes"><a class="anchor" href="#_securitycontext_authenticate_notes"></a>2.4.9. SecurityContext.authenticate() Notes</h4>
+<div class="paragraph">
+<p>Any <em>LoginToContinue</em>-annotated <em>HttpAuthenticationMechanism</em>, as well as the two built-in FORM authentication mechanisms, can be triggered via a call to the <em>SecurityContext.authenticate()</em> method. This method is based on the <em>HttpServletRequest.authenticate()</em> method, as defined by [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>], but has been extended to support additional functionality defined by the Servlet Container Profile of [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>].</p>
+</div>
+<div class="paragraph">
+<p>The extended behavior is facilitated by the <em>AuthenticationParameters</em> parameter passed to <em>SecurityContext.authenticate()</em>. <em>AuthenticationParameters</em> includes a <em>newAuthentication</em> field.</p>
+</div>
+<div class="paragraph">
+<p>When <em>newAuthentication</em> is set to <em>true</em>, the container MUST discard any state that it holds for an <em>HttpAuthenticationMechanism</em>, and that is associated with the current caller. Specifically, this means that any associated state, such as described for the <a href="#_logintocontinue_annotation">LoginToContinue Annotation</a> above, MUST be cleared, and the request must proceed as if processing a new request.</p>
+</div>
+<div class="paragraph">
+<p>When <em>newAuthentication</em> is set to <em>false</em>, the container MUST NOT discard any state that it holds for an <em>HttpAuthenticationMechanism</em>, and that is associated with the current caller. Instead, the container MUST resume the in-progress authentication dialog, based on the  associated state. Specifically, the container MUST:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Determine how far the caller is in the "login to continue" flow, based on the previously saved state (or lack thereof), and;</p>
+</li>
+<li>
+<p>Continue processing from that point as it would normally do.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_autoapplysession_notes"><a class="anchor" href="#_autoapplysession_notes"></a>2.4.10. AutoApplySession Notes</h4>
+<div class="paragraph">
+<p>As an example, idiomatic code for setting the <em>javax.servlet.http.registerSession</em> key as per the requirements is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.registerSession", TRUE.toString());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As another example, idiomatic code for setting the <em>CallerPrincipalCallback</em> as per the requirements is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">httpMessageContext.getHandler().handle(new Callback[] {
+    new CallerPrincipalCallback(httpMessageContext.getClientSubject(), principal) }
+);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_relationship_to_other_specifications"><a class="anchor" href="#_relationship_to_other_specifications"></a>2.5. Relationship to other specifications</h3>
+<div class="paragraph">
+<p>An <em>HttpAuthenticationMechanism</em> is a CDI bean, as defined by JSR-346, "Contexts and Dependency Injection for the Java EE platform", version 1.2 [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html">CDI12</a>].</p>
+</div>
+<div class="paragraph">
+<p>The methods defined by the <em>HttpAuthenticationMechanism</em> closely map to the methods and semantics of a <em>ServerAuthModule</em>, as defined by the Servlet Container Profile of [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html">JASPIC</a>]. (But an <em>HttpAuthenticationMechanism</em> is itself not a <em>ServerAuthModule</em>.) The servlet container MUST use JASPIC mechanisms to arrange for an <em>HttpAuthenticationMechanism</em> to be placed in service.</p>
+</div>
+<div class="paragraph">
+<p>This specification mandates that when a <em>ServerAuthModule</em> is called by the Servlet container, CDI services (such as the <em>BeanManager</em>) MUST be fully available, and all scopes that are defined to be active during the <em>service()</em> method of a servlet, or during the <em>doFilter()</em> method of a servlet filter, MUST be active. Specifically this means that the request, session, and application scopes MUST be active, and that a <em>ServerAuthModule</em> method such as <em>validateRequest()</em> MUST be able to obtain a reference to the CDI <em>BeanManager</em> programmatically (for example, by doing a JNDI lookup), and MUST be able to use that reference to obtain a valid request-scoped, session-scoped, or application-scoped bean. This specification does not mandate that a <em>ServerAuthModule</em> must itself be a CDI bean, or that a <em>ServerAuthModule</em> must be injectable.</p>
+</div>
+<div class="paragraph">
+<p>An <em>HttpAuthenticationMechanism</em> implementation is logically equivalent to a built-in authentication mechanism as defined by [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>] (i.e., HTTP Basic Authentication, HTTP Digest Authentication, Form Based Authentication, and HTTPS Client Authentication); more specifically, it corresponds to an "additional container authentication mechanism", as described in section 13.6.5 of [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>].</p>
+</div>
+<div class="paragraph">
+<p>The BASIC and FORM authentication mechanisms as defined by this specification are logically equivalent to the similarly named authentication mechanisms in [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>], respectively sections 13.6.1, "HTTP Basic Authentication", and 13.6.3, "Form Based Authentication".</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="identity-store"><a class="anchor" href="#identity-store"></a>3. Identity Store</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes the <em>IdentityStore</em> and <em>IdentityStoreHandler</em> interfaces and contracts.</p>
+</div>
+<div class="sect2">
+<h3 id="_introduction_2"><a class="anchor" href="#_introduction_2"></a>3.1. Introduction</h3>
+<div class="paragraph">
+<p><em>IdentityStore</em> provides an abstraction of an identity store, which is a database or directory (store) of identity information about a population of users that includes an application&#8217;s callers. An identity store holds caller names, group membership information, and information sufficient to allow it to validate a caller&#8217;s credentials. An identity store may also contain other information, such as globally unique caller identifiers (if different from caller name), or other caller attributes.</p>
+</div>
+<div class="paragraph">
+<p>Implementations of the <em>IdentityStore</em> interface are used to interact with identity stores to authenticate users (i.e., validate their credentials), and to retrieve caller groups. <em>IdentityStore</em> is roughly analogous to the JAAS <em>LoginModule</em> interface, which is often integrated into Java EE products (albeit in vendor-specific ways). Unlike <em>LoginModule</em>, <em>IdentityStore</em> is intended specifically for Java EE, and provides only credential validation and group retrieval functions (i.e., functions that require interaction with an identity store). An <em>IdentityStore</em> does not collect caller credentials, or manipulate <em>Subject</em>s.</p>
+</div>
+<div class="paragraph">
+<p><em>IdentityStore</em> is intended primarily for use by <em>HttpAuthenticationMechanism</em> implementations, but could in theory be used by other types of authentication mechanisms (e.g., a JASPIC <em>ServerAuthModule</em>, or a container&#8217;s built-in authentication mechanisms). <em>HttpAuthenticationMechanism</em> implementations are not required to use <em>IdentityStore</em>&#8201;&#8212;&#8201;they can authenticate users in any manner they choose&#8201;&#8212;&#8201;but <em>IdentityStore</em> will often be a useful and convenient mechanism.</p>
+</div>
+<div class="paragraph">
+<p>A significant advantage of using <em>HttpAuthenticationMechanism</em> and <em>IdentityStore</em> over container-provided BASIC or FORM implementations is that it allows an application to control the identity stores it will authenticate against, in a standard, portable way.</p>
+</div>
+<div class="paragraph">
+<p>An <em>IdentityStore</em> is expected to perform only context- and environment-independent processing (for example, verifying usernames and passwords and returning caller data). It should provide a pure <em>{credentials in, caller data out}</em> function. An <em>IdentityStore</em> should not directly interact with the caller, or attempt to examine request context or application state.</p>
+</div>
+<div class="paragraph">
+<p>The <em>IdentityStoreHandler</em> interface defines a mechanism for invoking on <em>IdentityStore</em> to validate a user credential. An <em>HttpAuthenticationMechanism</em> (or other caller) should not interact directly with an <em>IdentityStore</em>, but instead invoke the <em>IdentityStoreHandler</em> to validate credentials. The <em>IdentityStoreHandler</em>, in turn, invokes on the <em>IdentityStore</em>. An <em>IdentityStoreHandler</em> can also orchestrate an authentication across multiple <em>IdentityStore</em> instances, returning an aggregated result.</p>
+</div>
+<div class="paragraph">
+<p>A default <em>IdentityStoreHandler</em> implementation is supplied by the container, but applications can also supply their own implementation. The orchestration behavior of the default <em>IdentityStoreHandler</em> is described in the "<a href="#_handling_multiple_identity_stores">Handling Multiple Identity Stores</a>" section below.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_interface_and_theory_of_operation_2"><a class="anchor" href="#_interface_and_theory_of_operation_2"></a>3.2. Interface and Theory of Operation</h3>
+<div class="paragraph">
+<p>The <em>IdentityStore</em> interface defines two methods that are used by the runtime to validate a <em>Credential</em> or obtain caller information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>validate(Credential)</p>
+</li>
+<li>
+<p>getCallerGroups(CredentialValidationResult)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An implementation of <em>IdentityStore</em> can choose to handle either or both of these methods, depending on its capabilities and configuration. It indicates which methods it handles through the set of values returned by its <em>validationTypes()</em> method:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>VALIDATE</em> to indicate that it handles <em>validate()</em></p>
+</li>
+<li>
+<p><em>PROVIDE_GROUPS</em> to indicate that it handles <em>getCallerGroups()</em></p>
+</li>
+<li>
+<p>Both <em>VALIDATE</em> and <em>PROVIDE_GROUPS</em> to indicate that it handles both methods</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This method of declaring capabilities was chosen so that an <em>IdentityStore</em> could be written to support both methods, but configured to support just one or the other in any particular deployment.</p>
+</div>
+<div class="paragraph">
+<p>The full interface is shown below (without default behaviors; signatures only).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface IdentityStore {
+
+    enum ValidationType { VALIDATE, PROVIDE_GROUPS }
+
+    CredentialValidationResult validate(Credential credential);
+
+    Set&lt;String&gt; getCallerGroups(CredentialValidationResult validationResult);
+
+    int priority();
+
+    Set&lt;ValidationType&gt; validationTypes();
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_validating_credentials"><a class="anchor" href="#_validating_credentials"></a>3.2.1. Validating Credentials</h4>
+<div class="paragraph">
+<p>The <em>validate()</em> method determines whether a <em>Credential</em> is valid, and, if so, returns information about the user identified by the <em>Credential</em>. It is an optional method that an <em>IdentityStore</em> may choose not to implement.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">CredentialValidationResult validate(Credential credential);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result of validation is returned as a <em>CredentialValidationResult</em>, which provides methods to obtain the resulting status value, and, for successful validations, the ID of the identity store that validated the credential, the caller principal, the caller&#8217;s unique ID in the identity store, and the caller&#8217;s group memberships, if any. Only the caller principal is required to be present for a successful validation.</p>
+</div>
+<div class="paragraph">
+<p>The identity store ID, caller DN, and caller unique ID are provided to assist implementations of <em>IdentityStore</em> in cooperating across invocations of <em>validate()</em> and <em>getCallerGroups()</em>. They can be used to ensure that the correct caller&#8217;s groups are returned from <em>getCallerGroups()</em> even in environments where caller principal name alone is insufficient to uniquely identify the correct user account.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class CredentialValidationResult {
+
+    public enum Status { NOT_VALIDATED, INVALID, VALID };
+
+    public Status getStatus();
+
+    public String getIdentityStoreId();
+
+    public CallerPrincipal getCallerPrincipal();
+
+    public String getCallerDn();
+
+    public String getCallerUniqueId();
+
+    public Set&lt;String&gt; getCallerGroups();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The defined status values are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>VALID</em>: Validation succeeded and the user is authenticated. The caller principal and groups (if any) are available ONLY with this result status.</p>
+</li>
+<li>
+<p><em>INVALID</em>: Validation failed. The supplied <em>Credential</em> was invalid, or the corresponding user was not found in the user store.</p>
+</li>
+<li>
+<p><em>NOT_VALIDATED</em>: Validation was not attempted, because the <em>IdentityStore</em> does not handle the supplied <em>Credential</em> type.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <em>Credential</em> interface is a generic interface capable of representing any kind of token or user credential. An <em>IdentityStore</em> implementation can support multiple concrete <em>Credential</em> types, where a concrete <em>Credential</em> is an implementation of the <em>Credential</em> interface that represents a particular type of credential. It can do so by implementing the <em>validate(Credential)</em> method and testing the type of the <em>Credential</em> that&#8217;s passed in. As a convenience, the <em>IdentityStore</em> interface provides a default implementation of <em>validate(Credential)</em> that delegates to a method that can handle the provided <em>Credential</em> type, assuming such a method is implemented by the <em>IdentityStore</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">default CredentialValidationResult validate(Credential credential) {
+    try {
+        return CredentialValidationResult.class.cast(
+            MethodHandles.lookup()
+                .bind(this, "validate",
+                      methodType(CredentialValidationResult.class,
+                                 credential.getClass()))
+                .invoke(credential));
+    } catch (NoSuchMethodException e) {
+        return NOT_VALIDATED_RESULT;
+    } catch (Throwable e) {
+        throw new IllegalStateException(e);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, for example, <em>validate(Credential)</em> would delegate to the following method of <em>ExampleIdentityStore</em> if passed a <em>UsernamePasswordCredential</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class ExampleIdentityStore implements IdentityStore {
+
+    public CredentialValidationResult validate(
+        UsernamePasswordCredential usernamePasswordCredential) {
+        // Implementation ...
+        return new CredentialValidationResult(...);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_retrieving_caller_information"><a class="anchor" href="#_retrieving_caller_information"></a>3.2.2. Retrieving Caller Information</h4>
+<div class="paragraph">
+<p>The <em>getCallerGroups()</em> method retrieves the set of groups associated with a validated caller. It is an optional method that an <em>IdentityStore</em> may choose not to implement.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Set&lt;String&gt; getCallerGroups(CredentialValidationResult validationResult);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>getCallerGroups()</em> method supports aggregation of identity stores, where one identity store is used to authenticate users, but one or more other stores are used to retrieve additional groups. In such a scenario, it is necessary to query identity stores without validating the caller&#8217;s credential against the stores.</p>
+</div>
+<div class="paragraph">
+<p>If an <em>IdentityStore</em> supports both <em>validate()</em> and <em>getCallerGroups()</em>, the behavior of both methods should be consistent with respect to groups. That is, for a given user "foo", the set of groups returned when calling <em>validate()</em> to authenticate user "foo" should be the same as the set of groups returned when calling <em>getCallerGroups()</em> for <em>CallerPrincipal</em> "foo". (Assuming no errors occur during either call&#8201;&#8212;&#8201;this requirement is intended as a normative description of expected behavior; it does not imply that an implementation must "make it right" if errors or other uncontrollable factors cause results to vary between any two calls.)</p>
+</div>
+<div class="paragraph">
+<p>As a result, it is never necessary to call <em>getCallerGroups()</em> when there is only one <em>IdentityStore</em>, because the same groups are returned by the <em>validate()</em> method.</p>
+</div>
+<div class="paragraph">
+<p>Note that <em>getCallerGroups()</em> is not intended as a general purpose API for retrieving user groups. It should be called only by an <em>IdentityStoreHandler</em>, in the course of orchestrating a <em>validate()</em> call across multiple identity stores.</p>
+</div>
+<div class="paragraph">
+<p>Because <em>getCallerGroups()</em> enables its callers to access an external store as a privileged user (i.e., as an LDAP or database user with permission to search the store and retrieve information about arbitrary user accounts), it should be protected against unauthorized access.</p>
+</div>
+<div class="paragraph">
+<p>Implementors of <em>getCallerGroups()</em> are strongly encouraged to check that the calling context has <em>IdentityStorePermission</em>, as shown below, before proceeding. (The built-in identity stores are REQUIRED to do so, see <a href="#_annotations_and_built_in_identitystore_beans">Annotations and Built-In IdentityStore Beans</a>.)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">SecurityManager securityManager = System.getSecurityManager();
+if (securityManager != null) {
+    securityManager.checkPermission(new IdentityStorePermission("getGroups"));
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_declaring_capabilities"><a class="anchor" href="#_declaring_capabilities"></a>3.2.3. Declaring Capabilities</h4>
+<div class="paragraph">
+<p>The <em>IdentityStore</em> interface includes methods for an implementation to declare its capabilities and ordinal priority. An <em>IdentityStore</em> implementation may allow these "capabilities" to be configured, so that an application can determine what a store is used for.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">enum ValidationType { VALIDATE, PROVIDE_GROUPS }
+
+Set&lt;ValidationType&gt; DEFAULT_VALIDATION_TYPES = EnumSet.of(VALIDATE, PROVIDE_GROUPS);
+
+default int priority() {
+    return 100;
+}
+
+default Set&lt;ValidationType&gt; validationTypes() {
+    return DEFAULT_VALIDATION_TYPES;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>priority()</em> method allows an <em>IdentityStore</em> to be configured with an ordinal number indicating the order in which it should be consulted when multiple <em>IdentityStore</em>s are present (more precisely, when multiple enabled CDI Beans with type <em>IdentityStore</em> are available). Lower numbers represent higher priority, so an <em>IdentityStore</em> with a lower priority value is called before an <em>IdentityStore</em> with a higher priority value.</p>
+</div>
+<div class="paragraph">
+<p>The <em>validationTypes()</em> method returns a Set of enum constants of type <em>ValidationType</em>, indicating the purposes for which an <em>IdentityStore</em> should be used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>VALIDATE</em>, to indicate that it handles <em>validate()</em></p>
+</li>
+<li>
+<p><em>PROVIDE_GROUPS</em> to indicate that it handles <em>getCallerGroups()</em></p>
+</li>
+<li>
+<p>Both <em>VALIDATE</em> and <em>PROVIDE_GROUPS</em> to indicate that it handles both methods</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An <em>IdentityStore</em>'s validation types determine whether the store is used for authentication only (meaning any group data it returns must be ignored), for providing groups only (meaning it&#8217;s not used for authentication, but only to obtain group data for a caller that was authenticated by a different <em>IdentityStore</em>), or for both (meaning it&#8217;s used for authentication and any group data it returns is used).</p>
+</div>
+<div class="paragraph">
+<p>This method of declaring capabilities was chosen to enable applications to enable or disable <em>IdentityStore</em> capabilities via configuration.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_handling_multiple_identity_stores"><a class="anchor" href="#_handling_multiple_identity_stores"></a>3.2.4. Handling Multiple Identity Stores</h4>
+<div class="paragraph">
+<p>Access to the <em>IdentityStore</em> is abstracted by the <em>IdentityStoreHandler</em> interface, which provides a single method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface IdentityStoreHandler {
+    CredentialValidationResult validate(Credential credential);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the caller, the semantics of the <em>validate()</em> method are as described for the <em>IdentityStore</em> method with the same signature.</p>
+</div>
+<div class="paragraph">
+<p>The purpose of the <em>IdentityStoreHandler</em> is to allow for multiple identity stores to logically act as a single <em>IdentityStore</em> to the <em>HttpAuthenticationMechanism</em>. A compliant implementation of this specification MUST provide a default implementation of the <em>IdentityStoreHandler</em> that is an enabled CDI bean with qualifier @Default, and scope @ApplicationScoped, as defined by the CDI specification.</p>
+</div>
+<div class="paragraph">
+<p>The <em>validate()</em> method of the default implementation MUST do the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Call the <em>validate(Credential credential)</em> method on all available <em>IdentityStore</em> beans that declared themselves capable of doing validation, in the order induced by the return value of the <em>getPriority()</em> method of each <em>IdentityStore</em>. (Lower priority values imply a lower order, causing the corresponding <em>validate(Credential credential)</em> method to be called sooner. The calling order is undefined when two <em>IdentityStore</em> implementations return the same value.)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If a call to <em>validate()</em> returns a result with status <em>INVALID</em>, remember it, in case no <em>IdentityStore</em> returns a VALID result.</p>
+</li>
+<li>
+<p>If a call to <em>validate()</em> returns a result with status <em>VALID</em>, remember this result and stop calling <em>validate()</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If all <em>IdentityStore</em> beans have been called but no result was returned with status <em>VALID</em>, then:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If a result was previously returned with status <em>INVALID</em>, return that result.</p>
+</li>
+<li>
+<p>Otherwise, return a result with status <em>NOT_VALIDATED</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If there is a <em>VALID</em> result:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create an empty set of groups.</p>
+</li>
+<li>
+<p>Add any groups returned in the CredentialValidationResult to the set of groups, if and only if the identity store that returned the <em>VALID</em> result declared the <em>PROVIDE_GROUPS</em> validation type.</p>
+</li>
+<li>
+<p>Call the <em>getCallerGroups()</em> method on all available <em>IdentityStore</em> beans that declared <em>only</em> the <em>PROVIDE_GROUPS</em> validation type, in the order induced by the return value of the <em>getPriority()</em> method of each <em>IdentityStore</em>, passing in the <em>CredentialValidationResult</em> obtained during the previous phase. Add the groups returned by each call to the set of accumulated groups.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Return a new <em>CredentialValidationResult</em> with status <em>VALID</em>; the <em>CallerPrincipal</em>, <em>CallerUniqueId</em>, <em>CallerDn</em>, and <em>IdentityStoreId</em> that were returned from the successful <em>validate()</em>; and the accumulated collection of groups.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The default <em>IdentityStoreHandler</em> MUST make all calls to <em>getCallerGroups()</em> in the context of a <em>PrivilegedAction</em>. Other implementations of <em>IdentityStoreHandler</em> are strongly encouraged to do so as well.</p>
+</div>
+<div class="paragraph">
+<p>The necessary permission grants (i.e., for <em>IdentityStorePermission("getGroups")</em>) should be configured if running with a <em>SecurityManager</em>.</p>
+</div>
+<div class="paragraph">
+<p>See javadoc for additional information.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_state"><a class="anchor" href="#_state"></a>3.2.5. State</h4>
+<div class="paragraph">
+<p>An <em>IdentityStore</em> is logically stateless. An <em>IdentityStoreHandler</em> should not make any assumptions about the state of an <em>IdentityStore</em> before, during, or after making calls to it. In particular, an <em>IdentityStore</em> store should not be aware of the point its caller has reached in the authentication process, and, even more specifically, an <em>IdentityStore</em> should not keep track of whether a caller is authenticated or not at any given moment in time.</p>
+</div>
+<div class="paragraph">
+<p>An <em>IdentityStore</em> instance may make use of instance variables; for example, to store configuration data like an LDAP URL, to store actual caller data for in-memory lookup, for the caching, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_remembermeidentitystore"><a class="anchor" href="#_remembermeidentitystore"></a>3.2.6. RememberMeIdentityStore</h4>
+<div class="paragraph">
+<p>The <em>RememberMeIdentityStore</em> is a specialized interface that is similar to the standard <em>IdentityStore</em> interface, but is a distinct type (no inheritance relationship) and works differently.</p>
+</div>
+<div class="paragraph">
+<p>Applications often want to remember logged in callers for extended periods of time&#8201;&#8212;&#8201;days or weeks&#8201;&#8212;&#8201;so that callers don&#8217;t have to log in every time they visit the application. A <em>RememberMeIdentityStore</em> can be used to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate a login token ("remember me token") for a caller</p>
+</li>
+<li>
+<p>Remember the caller associated with the login token</p>
+</li>
+<li>
+<p>Validate the login token when the caller returns, and re-authenticate the caller without the need to provide additional credentials.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the caller does not have a login token, or if the login token has expired, then the normal authentication process takes place.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface RememberMeIdentityStore {
+
+    CredentialValidationResult validate(RememberMeCredential credential);
+
+    String generateLoginToken(CallerPrincipal callerPrincipal, Set&lt;String&gt; groups);
+
+    void removeLoginToken(String token);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>RememberMeIdentityStore</em> can only be used when an application includes an <em>HttpAuthenticationMechanism</em> or configures one of the built-in ones. The application must specify the <em>RememberMe</em> annotation on the <em>HttpAuthenticationMechanism</em> to configure the <em>RememberMeIdentityStore</em>.</p>
+</div>
+<div class="paragraph">
+<p>See the description of the <em>RememberMe</em> annotation in Chapter 2, "<a href="#authentication-mechanism">Authentication Mechanism</a>".</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installation_and_configuration_2"><a class="anchor" href="#_installation_and_configuration_2"></a>3.3. Installation and Configuration</h3>
+<div class="paragraph">
+<p>Installation of an <em>IdentityStore</em> depends on the CDI specification. That is, an <em>IdentityStore</em> is considered installed and available for usage when it&#8217;s available to the CDI runtime as an enabled Bean. An <em>IdentityStore</em> is assumed to be normal scoped.</p>
+</div>
+<div class="paragraph">
+<p>It MUST be possible for the definition of an <em>IdentityStore</em> to exist within the application archive. Alternatively such definition MAY also exists outside the application archive, for example in a jar added to the classpath of an application server.</p>
+</div>
+<div class="paragraph">
+<p>As described above, in the "<a href="#_declaring_capabilities">Declaring Capabilities</a>" section, the <em>IdentityStore</em> interface includes two methods, <em>validationTypes()</em> and <em>priority()</em>, that enable an <em>IdentityStore</em> to declare its capabilities. Those capabilities may be intrinsic&#8201;&#8212;&#8201;determined by the <em>IdentityStore</em>'s implementation&#8201;&#8212;&#8201;or they may be determined by the <em>IdentityStore</em>'s configuration.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_annotations_and_built_in_identitystore_beans"><a class="anchor" href="#_annotations_and_built_in_identitystore_beans"></a>3.4. Annotations and Built-In IdentityStore Beans</h3>
+<div class="paragraph">
+<p>A Java EE container MUST support built-in beans for the following <em>IdentityStore</em> types, to be configured and made available via corresponding annotations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>LDAP&#8201;&#8212;&#8201;Supports caller data that is stored in an external LDAP server. This bean is activated and configured via the <em>@LdapIdentityStoreDefinition</em> annotation.</p>
+</li>
+<li>
+<p>Database&#8201;&#8212;&#8201;Supports caller data that is stored in an external database accessible via a DataSource bound to JNDI. This bean is activated and configured via the <em>@DatabaseIdentityStoreDefinition</em> annotation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each of these beans MUST have the qualifier @Default and the scope @ApplicationScoped, as defined by the CDI specification.</p>
+</div>
+<div class="paragraph">
+<p>The built-in identity stores MUST support validating <em>UsernamePasswordCredential</em>. They MAY support other credential types, but are NOT REQUIRED to.</p>
+</div>
+<div class="paragraph">
+<p>The built-in identity stores MUST check whether a <em>SecurityManager</em> is configured, and, if so, check whether the calling context has <em>IdentityStorePermission</em>, as described in <a href="#_retrieving_caller_information">Retrieving Caller Information</a> above, before proceeding.</p>
+</div>
+<div class="paragraph">
+<p>Note that implementations are explicitly NOT REQUIRED to provide an LDAP server or database. The requirement is only to provide <em>IdentityStore</em> implementations that can work with an external LDAP or database server that may be present in the operating environment.</p>
+</div>
+<div class="paragraph">
+<p>The corresponding annotations are defined as shown in the following sections.</p>
+</div>
+<div class="sect3">
+<h4 id="_ldap_annotation"><a class="anchor" href="#_ldap_annotation"></a>3.4.1. LDAP Annotation</h4>
+<div class="paragraph">
+<p>The <em>LdapIdentityStoreDefinition</em> annotation configures an instance of the built-in LDAP identity store. See javadoc for details of the configuration attributes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Retention(RUNTIME)
+@Target(TYPE)
+public @interface LdapIdentityStoreDefinition {
+
+    enum LdapSearchScope { ONE_LEVEL, SUBTREE }
+
+    String url() default "";
+
+    String bindDn() default "";
+
+    String bindDnPassword() default "";
+
+    String callerBaseDn() default "";
+
+    String callerNameAttribute() default "uid";
+
+    String callerSearchBase() default "";
+
+    String callerSearchFilter() default "";
+
+    LdapSearchScope callerSearchScope() default LdapSearchScope.SUBTREE;
+
+    String callerSearchScopeExpression() default "";
+
+    String groupSearchBase() default "";
+
+    String groupSearchFilter() default "";
+
+    LdapSearchScope groupSearchScope() default LdapSearchScope.SUBTREE;
+
+    String groupSearchScopeExpression() default "";
+
+    String groupNameAttribute() default "cn";
+
+    String groupMemberAttribute() default "member";
+
+    String groupMemberOfAttribute() default "memberOf";
+
+    int readTimeout() default 0;
+
+    String readTimeoutExpression() default "";
+
+    int maxResults() default 1000;
+
+    String maxResultsExpression() default "";
+
+    int priority() default 80;
+
+    String priorityExpression() default "";
+
+    ValidationType[] useFor() default {VALIDATE, PROVIDE_GROUPS};
+
+    String useForExpression() default "";
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_database_annotation"><a class="anchor" href="#_database_annotation"></a>3.4.2. Database Annotation</h4>
+<div class="paragraph">
+<p>The <em>DatabaseIdentityStoreDefinition</em> annotation configures an instance of the built-in database identity store.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Retention(RUNTIME)
+@Target(TYPE)
+public @interface DatabaseIdentityStoreDefinition {
+
+    String dataSourceLookup() default "java:comp/DefaultDataSource";
+
+    String callerQuery() default "";
+
+    String groupsQuery() default "";
+
+    Class&lt;? extends PasswordHash&gt; hashAlgorithm() default Pbkdf2PasswordHash.class;
+
+    String[] hashAlgorithmParameters() default {};
+
+    int priority() default 70;
+
+    String priorityExpression() default "";
+
+    ValidationType[] useFor() default {VALIDATE, PROVIDE_GROUPS};
+
+    String useForExpression() default "";
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Password hashing/hash verification is provided by an implementation of the <em>PasswordHash</em> interface, which must be made available as a dependent-scoped bean, and is configured by type on the <em>hashAlgorithm()</em> attribute. The specified type may refer to the actual implementation class, or to any type it implements or extends, as long as the specified type implements the <em>PasswordHash</em> interface.</p>
+</div>
+<div class="paragraph">
+<p>Parameters for the configured <em>PasswordHash</em> can be provided using the <em>hashAlgorithmParameters</em> attribute, and will be passed to the <em>initialize()</em> method of the <em>PasswordHash</em> when the identity store is initialized.</p>
+</div>
+<div class="paragraph">
+<p>The default hash algorithm, <em>Pbkdf2PasswordHash</em>, is an interface denoting a standard, built-in <em>PasswordHash</em>. All implementations of this specification MUST provide an implementation of the <em>Pbkdf2PasswordHash</em> interface, with configuration and behavior as described by the interface&#8217;s javadoc.</p>
+</div>
+<div class="paragraph">
+<p>See javadoc for further details on <em>PasswordHash</em> and the <em>DatabaseIdentityStoreDefinition</em> annotation.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_relationship_to_other_specifications_2"><a class="anchor" href="#_relationship_to_other_specifications_2"></a>3.5. Relationship to Other Specifications</h3>
+<div class="paragraph">
+<p><em>IdentityStore</em> and <em>IdentityStoreHandler</em> implementations are CDI beans, as defined by [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html">CDI12</a>].</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security-context"><a class="anchor" href="#security-context"></a>4. Security Context</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes the <em>SecurityContext</em> interface and contract.</p>
+</div>
+<div class="sect2">
+<h3 id="_introduction_3"><a class="anchor" href="#_introduction_3"></a>4.1. Introduction</h3>
+<div class="paragraph">
+<p>The Java EE platform defines a declarative security model for protecting application resources. The declared constraints on access are then enforced by the container. In some cases the declarative model is not sufficient; for example, when a combination of tests and constraints is needed that is more complex than the declarative model allows for. Programmatic security allows an application to perform tests and grant or deny access to resources.</p>
+</div>
+<div class="paragraph">
+<p>This specification provides an access point for programmatic security&#8201;&#8212;&#8201;a security context&#8201;&#8212;&#8201;represented by the <em>SecurityContext</em> interface.</p>
+</div>
+<div class="paragraph">
+<p>In this version of the specification, the <em>SecurityContext</em> MUST be available in the Servlet container and the EJB container. Application servers MAY make <em>SecurityContext</em> available in other containers, but are NOT REQUIRED to.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_retrieving_and_testing_for_caller_data"><a class="anchor" href="#_retrieving_and_testing_for_caller_data"></a>4.2. Retrieving and Testing for Caller Data</h3>
+<div class="paragraph">
+<p>The <em>SecurityContext</em> interface defines two methods that allow the application to test aspects of the caller data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Principal getCallerPrincipal();
+
+&lt;T extends Principal&gt; Set&lt;T&gt; getPrincipalsByType(Class&lt;T&gt; pType);
+
+boolean isCallerInRole(String role);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>getCallerPrincipal()</em> method retrieves the <em>Principal</em> representing the caller. This is the container-specific representation of the caller principal, and the type may differ from the type of the caller principal originally established by an <em>HttpAuthenticationMechanism</em>. This method returns null for an unauthenticated caller. (Note that this behavior differs from the behavior of <em>EJBContext.getCallerPrincipal()</em>, which, per JSR-345, "Enterprise JavaBeans", version 3.2 [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr345/index.html">EJB32</a>], returns a principal with a "product-specific unauthenticated principal name" to represent an unauthenticated caller.)</p>
+</div>
+<div class="paragraph">
+<p>The <em>getPrincipalsByType()</em> method retrieves all principals of the given type. This method can be used to retrieve an application-specific caller principal established during authentication. This method is primarily useful in the case that the container&#8217;s caller principal is a different type than the application caller principal, and the application needs specific information behavior available only from the application principal. This method returns an empty <em>Set</em> if the caller is unauthenticated, or if the requested type is not found.</p>
+</div>
+<div class="paragraph">
+<p>Where both a container caller principal and an application caller principal are present, the value returned by <em>getName()</em> MUST be the same for both principals.</p>
+</div>
+<div class="paragraph">
+<p>See the Chapter 1, "<a href="#concepts">Concepts</a>", for more information on principal handling.</p>
+</div>
+<div class="paragraph">
+<p>The <em>isCallerInRole()</em> method takes a String argument that represents the role that is to be tested for. It is undefined by this specification how the role determination is made, but the result MUST be the same as if the corresponding container-specific call had been made (i.e., <em>HttpServletRequest.isUserInRole()</em>, <em>EJBContext.isCallerInRole()</em>), and MUST be consistent with the result implied by other specifications that prescribe role-mapping behavior.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing_for_access"><a class="anchor" href="#_testing_for_access"></a>4.3. Testing for Access</h3>
+<div class="paragraph">
+<p>The <em>SecurityContext</em> interface defines a method for programmatically testing access to a resource:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">boolean hasAccessToWebResource(String resource, String... methods);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>hasAccessToWebResource()</em> method determines if the caller has access to the specified web resource for the specified HTTP methods, as determined by the security constraints configured for the application. See section 13.8 of [<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html">SERVLET31</a>] for a description of web application security constraints.</p>
+</div>
+<div class="paragraph">
+<p>The resource parameter is an <em>URLPatternSpec</em> that identifies an application-specific web resource. See the javadoc for more detail.</p>
+</div>
+<div class="paragraph">
+<p>This method can only be used to check access to resources in the current application&#8201;&#8212;&#8201;it cannot be called cross-application, or cross-container, to check access to resources in a different application.</p>
+</div>
+<div class="paragraph">
+<p>As an example, consider the following Servlet definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@WebServlet("/protectedServlet")
+@ServletSecurity(@HttpConstraint(rolesAllowed = "foo"))
+public class ProtectedServlet extends HttpServlet { ... }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following call to <em>hasAccessToWebResource()</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">securityContext.hasAccessToWebResource("/protectedServlet", GET)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above <em>hasAccessToWebResource()</em> call would return true if and only if the caller is in role "foo".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_triggering_the_authentication_process"><a class="anchor" href="#_triggering_the_authentication_process"></a>4.4. Triggering the Authentication Process</h3>
+<div class="paragraph">
+<p>The <em>SecurityContext</em> interface defines a method that allows an application to programmatically trigger the authentication process:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">AuthenticationStatus authenticate(HttpServletRequest request,
+                        HttpServletResponse response,
+                        AuthenticationParameters parameters);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Programmatically triggering means that the container responds as if the caller had attempted to access a constrained resource. It causes the container to invoke the authentication mechanism configured for the application. If the configured authentication mechanism is an <em>HttpAuthenticationMechanism</em>, then the AuthenticationParameters argument is meaningful and extended capabilities of <em>HttpAuthenticationMechanism</em> are available. If not, the behavior and result is as if <em>HttpServletRequest.authenticate()</em> were called.</p>
+</div>
+<div class="paragraph">
+<p>The <em>authenticate()</em> method allows an application to signal to the container that it should start the authentication process with the caller. This method requires a <em>HttpServletRequest</em> and <em>HttpServletResponse</em> parameters to be passed in, and can therefore only be used in a valid Servlet context.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_relationship_to_other_specifications_3"><a class="anchor" href="#_relationship_to_other_specifications_3"></a>4.5. Relationship to Other Specifications</h3>
+<div class="paragraph">
+<p>The <em>SecurityContext</em> implementation is a CDI bean, as defined by [<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html">CDI12</a>].</p>
+</div>
+<div class="paragraph">
+<p>Various specifications in Java EE provide similar or even identical methods to those provided be the <em>SecurityContext</em>. It is the intention of this specification to eventually supersede those methods and provide a cross-specification, platform alternative. The following gives an overview:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Servlet - <em>HttpServletRequest#getUserPrincipal</em>, <em>HttpServletRequest#isUserInRole</em></p>
+</li>
+<li>
+<p>EJB - <em>EJBContext#getCallerPrincipal</em>, <em>EJBContext#isCallerInRole</em></p>
+</li>
+<li>
+<p>JAX-WS - <em>WebServiceContext#getUserPrincipal</em>, <em>WebServiceContext#isUserInRole</em></p>
+</li>
+<li>
+<p>JAX-RS - <em>SecurityContext#getUserPrincipal</em>, <em>SecurityContext#isUserInRole</em></p>
+</li>
+<li>
+<p>JSF - <em>ExternalContext#getUserPrincipal</em>, <em>ExternalContext#isUserInRole</em></p>
+</li>
+<li>
+<p>CDI - <em>@Inject Principal</em></p>
+</li>
+<li>
+<p>WebSockets - <em>Session#getUserPrincipal</em></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bibliography"><a class="anchor" href="#_bibliography"></a>Bibliography</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following documents are referenced by this specification.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">[CDI12]</dt>
+<dd>
+<p>JSR-346, "Contexts and Dependency Injection for the Java EE platform", version 1.2, Maintenance Release<br>
+<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html" class="bare">https://jcp.org/aboutJava/communityprocess/mrel/jsr346/index.html</a></p>
+</dd>
+<dt class="hdlist1">[EJB32]</dt>
+<dd>
+<p>JSR-345, "Enterprise JavaBeans", version 3.2<br>
+<a href="https://jcp.org/aboutJava/communityprocess/final/jsr345/index.html" class="bare">https://jcp.org/aboutJava/communityprocess/final/jsr345/index.html</a></p>
+</dd>
+<dt class="hdlist1">[EL30]</dt>
+<dd>
+<p>JSR-341, "Expression Language", version 3.0<br>
+<a href="https://jcp.org/aboutJava/communityprocess/final/jsr341/index.html" class="bare">https://jcp.org/aboutJava/communityprocess/final/jsr341/index.html</a></p>
+</dd>
+<dt class="hdlist1">[JACC]</dt>
+<dd>
+<p>JSR-115, "Java Authorization Contract for Containers", version 1.5, Maintenance Release 3<br>
+<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html" class="bare">https://jcp.org/aboutJava/communityprocess/mrel/jsr115/index3.html</a></p>
+</dd>
+<dt class="hdlist1">[JASPIC]</dt>
+<dd>
+<p>JSR-196, "Java Authentication SPI for Containers", version 1.1, Maintenance Release B<br>
+<a href="https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html" class="bare">https://jcp.org/aboutJava/communityprocess/mrel/jsr196/index2.html</a></p>
+</dd>
+<dt class="hdlist1">[RFC2119]</dt>
+<dd>
+<p>RFC 2119, "Key words for use in RFCs to Indicate Requirement Level"<br>
+<a href="https://tools.ietf.org/html/rfc2119" class="bare">https://tools.ietf.org/html/rfc2119</a></p>
+</dd>
+<dt class="hdlist1">[RFC7617]</dt>
+<dd>
+<p>RFC 7617, "The <em>Basic</em> HTTP Authentication Scheme"<br>
+<a href="https://tools.ietf.org/html/rfc7617" class="bare">https://tools.ietf.org/html/rfc7617</a></p>
+</dd>
+<dt class="hdlist1">[SECAPI]</dt>
+<dd>
+<p>JSR-375, "Java EE Security API", version 1.0<br>
+<a href="https://jcp.org/en/jsr/detail?id=375" class="bare">https://jcp.org/en/jsr/detail?id=375</a></p>
+</dd>
+<dt class="hdlist1">[SERVLET31]</dt>
+<dd>
+<p>JSR-340, "Java Servlet Specification", version 3.1<br>
+<a href="https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html" class="bare">https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html</a></p>
+</dd>
+<dt class="hdlist1">[SHIROTERM]</dt>
+<dd>
+<p>"Apache Shiro Terminology"<br>
+<a href="https://shiro.apache.org/terminology.html" class="bare">https://shiro.apache.org/terminology.html</a></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-08-04 23:28:59 EDT
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</body>
+</html>

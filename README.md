@@ -24,8 +24,8 @@ Please refer to the following resources for more information:
 
 The latest specification and javadoc can be found at:
 
-* [specification](jsr375-spec.pdf)
-* [javadoc](https://javaee.github.io/security-api/apidocs/index.html)
+* Specification: [pdf](spec/jsr375-spec.pdf) | [html](spec/jsr375-spec.html)
+* API Javadoc: [javadoc](https://javaee.github.io/security-api/apidocs/index.html)
 
 Source and issue tracking for the JSR-375 specification, API, and RI
 are hosted at the following repositorys in the Java EE organization at GitHub:
