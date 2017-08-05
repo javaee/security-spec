@@ -11,16 +11,20 @@ IF YOU ARE NOT WILLING TO BE BOUND BY THEM, SELECT THE "DECLINE" BUTTON AT THE B
 THIS PAGE AND THE DOWNLOADING PROCESS WILL NOT CONTINUE.
 
 Specification: JSR-375 Java EE Security API ("Specification")
+
 Version: 1.0
+
 Status: Proposed Final Draft
+
 Release: July 2017
 
 Copyright 2017 Oracle America, Inc.
+
 500 Oracle Parkway, Redwood City, California 94065, U.S.A.
 
 All rights reserved.
 
-NOTICE
+### NOTICE
 The Specification is protected by copyright and the information described therein may be protected by
 one or more U.S. patents, foreign patents, or pending applications. Except as provided under the
 following license, no part of the Specification may be reproduced in any form by any means without the
@@ -72,12 +76,12 @@ Specification.
 "javax", "com.oracle" or their equivalents in any subsequent naming convention adopted by Oracle
 through the Java Community Process, or any recognized successors or replacements thereof
 
-TRADEMARKS
+### TRADEMARKS
 No right, title, or interest in or to any trademarks, service marks, or trade names of Oracle or Oracle's
 licensors is granted hereunder. Oracle, the Oracle logo, and Java are trademarks or registered
 trademarks of Oracle America, Inc. in the U.S. and other countries.
 
-DISCLAIMER OF WARRANTIES
+### DISCLAIMER OF WARRANTIES
 THE SPECIFICATION IS PROVIDED "AS IS" AND IS EXPERIMENTAL AND MAY CONTAIN DEFECTS OR
 DEFICIENCIES WHICH CANNOT OR WILL NOT BE CORRECTED BY ORACLE. ORACLE MAKES NO
 REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO,
@@ -94,7 +98,7 @@ CHANGES TO THE PRODUCT(S) AND/OR THE PROGRAM(S) DESCRIBED IN THE SPECIFICATION A
 TIME. Any use of such changes in the Specification will be governed by the then-current license for the
 applicable version of the Specification.
 
-LIMITATION OF LIABILITY
+### LIMITATION OF LIABILITY
 TO THE EXTENT NOT PROHIBITED BY LAW, IN NO EVENT WILL ORACLE OR ITS LICENSORS BE LIABLE FOR
 ANY DAMAGES, INCLUDING WITHOUT LIMITATION, LOST REVENUE, PROFITS OR DATA, OR FOR SPECIAL,
 INDIRECT, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS
@@ -107,14 +111,14 @@ for any purposes other than the limited right of evaluation as described above, 
 later versions or releases of any Specification furnished to you are incompatible with the Specification
 provided to you under this license.
 
-RESTRICTED RIGHTS LEGEND
+### RESTRICTED RIGHTS LEGEND
 If this Software is being acquired by or on behalf of the U.S. Government or by a U.S. Government prime
 contractor or subcontractor (at any tier), then the Government's rights in the Software and
 accompanying documentation shall be only as set forth in this license; this is in accordance with 48
 C.F.R. 227.7201 through 227.7202-4 (for Department of Defense (DoD) acquisitions) and with 48 C.F.R.
 2.101 and 12.212 (for non-DoD acquisitions).
 
-REPORT
+### REPORT
 You may wish to report any ambiguities, inconsistencies or inaccuracies you may find in connection with
 your evaluation of the Specification ("Feedback"). To the extent that you provide Oracle with any
 Feedback, you hereby: (i) agree that such Feedback is provided on a non-proprietary and non-
@@ -123,7 +127,7 @@ license, with the right to sublicense through multiple levels of sublicensees, t
 use without limitation the Feedback for any purpose related to the Specification and future versions,
 implementations, and test suites thereof.
 
-GENERAL TERMS
+### GENERAL TERMS
 Any action related to this Agreement will be governed by California law and controlling U.S. federal law.
 The U.N. Convention for the International Sale of Goods and the choice of law rules of any jurisdiction
 will not apply.
