@@ -10,17 +10,25 @@ DOWNLOADING THIS SPECIFICATION, YOU ACCEPT THE TERMS AND CONDITIONS OF THIS AGRE
 IF YOU ARE NOT WILLING TO BE BOUND BY THEM, SELECT THE "DECLINE" BUTTON AT THE BOTTOM OF
 THIS PAGE AND THE DOWNLOADING PROCESS WILL NOT CONTINUE.
 
-<pre>
+<br>
+<br>
 Specification: JSR-375 Java EE Security API ("Specification")
+<br>
 Version: 1.0
+<br>
 Status: Proposed Final Draft
+<br>
 Release: July 2017
-
+<br>
+<br>
 Copyright 2017 Oracle America, Inc.
+<br>
 500 Oracle Parkway, Redwood City, California 94065, U.S.A.
-
+<br>
+<br>
 All rights reserved.
-</pre>
+<br>
+<br>
 
 ### NOTICE
 The Specification is protected by copyright and the information described therein may be protected by
