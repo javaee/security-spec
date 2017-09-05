@@ -14,7 +14,7 @@ Specification Lead: Oracle America, Inc. ("Specification Lead")
 
 Release: August 2017
 
-Copyright 2017 Oracle America, Inc. +
+Copyright 2017 Oracle America, Inc.
 All rights reserved.
 
 LIMITED LICENSE GRANTS
@@ -57,20 +57,20 @@ make any claims concerning their implementation's compliance with the Specificat
 
 4. Reciprocity Concerning Patent Licenses.
 
-a. With respect to any patent claims covered by the license granted under subparagraph 2
+    a. With respect to any patent claims covered by the license granted under subparagraph 2
 above that would be infringed by all technically feasible implementations of the Specification, such
 license is conditioned upon your offering on fair, reasonable and non-discriminatory terms, to any party
 seeking it from You, a perpetual, non-exclusive, non-transferable, worldwide license under Your patent
 rights which are or would be infringed by all technically feasible implementations of the Specification to
 develop, distribute and use a Compliant Implementation.
 
-b. With respect to any patent claims owned by Specification Lead and covered by the license
+    b. With respect to any patent claims owned by Specification Lead and covered by the license
 granted under subparagraph 2, whether or not their infringement can be avoided in a technically
 feasible manner when implementing the Specification, such license shall terminate with respect to such
 claims if You initiate a claim against Specification Lead that it has, in the course of performing its
 responsibilities as the Specification Lead, induced any other entity to infringe Your patent rights.
 
-c. Also with respect to any patent claims owned by Specification Lead and covered by the license
+    c. Also with respect to any patent claims owned by Specification Lead and covered by the license
 granted under subparagraph 2 above, where the infringement of such claims can be avoided in a
 technically feasible manner when implementing the Specification such license, with respect to such
 claims, shall terminate if You initiate a claim against Specification Lead that its making, having made,
