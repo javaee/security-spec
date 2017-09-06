@@ -158,7 +158,8 @@
 :compat-mode:
 :pdf-page-size: Letter
 = Java EE Security API Specification
-Version 1.0, August 1, 2017
+Will Hopkins;Arjan Tijms
+Version 1.0 (Final), August 2017
 include::license.asciidoc[]
 
 include::preface.asciidoc[]
