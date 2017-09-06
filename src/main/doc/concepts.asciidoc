@@ -157,7 +157,7 @@
 
 == Concepts and General Requirements
 
-This chapter overview information and terminology related to this specification, and also includes a general requirements not specified elsewhere in this document.
+This chapter provides overview information and terminology related to this specification, and also includes general requirements not specified elsewhere in this document.
 
 === Terminology And Acronyms
 

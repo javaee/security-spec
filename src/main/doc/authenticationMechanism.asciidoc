@@ -438,12 +438,12 @@ public @interface RememberMe {
 The container MUST provide an interceptor implementation at priority _PLATFORM_BEFORE_ + 210 that backs the _RememberMe_ annotation and intercepts calls to the configured _HttpAuthenticationMechanism_. The interceptor MUST behave as follows when intercepting calls to the _HttpAuthenticationMechanism_:
 
 Intercepting _validateRequest()_::
-* Determine whether there is a RememberMe cookie in the request
+* Determine whether there is a RememberMe cookie in the request.
 * If the cookie is present:
 ** Use it to construct a _RememberMeCredential_ and call the _validate()_ method of the _RememberMeIdentityStore_.
-** If the validate succeeds, call _HttpMessageContext.notifyContainerAboutLogin(), passing the CallerPrincipal and CallerGroups returned by _validate().
+** If the validate succeeds, call _HttpMessageContext.notifyContainerAboutLogin()_, passing the CallerPrincipal and CallerGroups returned by _validate()_.
 ** If the validate fails, remove the cookie from the request.
-* If no cookie is present, or if the attempt to validate a cookie failed, authenticate the caller normally by calling _proceed() on the _InvocationContext_.
+* If no cookie is present, or if the attempt to validate a cookie failed, authenticate the caller normally by calling _proceed()_ on the _InvocationContext_.
 * If authentication succeeds, and the caller has requested to be remembered, as determined by evaluating the _isRememberMeExpression()_, then:
 ** Call the _generateLoginToken()_ method of the _RememberMeIdentityStore_.
 ** Set the new cookie with parameters as configured on the _RememberMe_ annotation.
@@ -574,9 +574,9 @@ public class LoginBacking {
             withParams()
                 .credential(credential));
         
-        if (status.equals(IN_PROGRESS)) {
+        if (status.equals(SEND_CONTINUE)) {
             facesContext.responseComplete();
-        } else if (status.equals(FAILURE)) {
+        } else if (status.equals(SEND_FAILURE)) {
             addError(facesContext, "Authentication failed");
         }
         
