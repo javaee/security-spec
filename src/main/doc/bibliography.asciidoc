@@ -156,6 +156,8 @@
 :numbered!:
 ["bibliography",sectnum="0"]
 
+[[bibliography]]
+
 == Bibliography
 
 The following documents are referenced by this specification.

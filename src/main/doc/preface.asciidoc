@@ -156,6 +156,8 @@
 :numbered!:
 ["preface",sectnum="0"]
 
+[[preface]]
+
 == Preface
 
 This document is the Java EE Security API Specification, version 1.0.
