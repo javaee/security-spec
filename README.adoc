@@ -1,3 +1,5 @@
+⚠️ This project is now part of the EE4J initiative. This repository has been archived as all activities are now happening in the [corresponding Eclipse repository](https://github.com/eclipse-ee4j/security-api).
+
 = JSR 375 EE Security API: Specification
 
 The repository contains the AsciiDoc sources to generate the specification document in both HTML and pdf format.
